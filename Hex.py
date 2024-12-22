@@ -8,11 +8,12 @@ from dataclasses import dataclass
 class FixedLength:
     length: int
 
-class Hex(ABC):
 
-    # @abstractmethod
-    # def to_array_location(self) -> tuple[int, int]:
-    #     pass
+class Hex(ABC):
+    @property
+    @abstractmethod
+    def coordinates_in_2d(self) -> tuple[int, int]:
+        pass
 
     @abstractmethod
     def distance(self, other: Hex) -> int:
@@ -53,6 +54,10 @@ class DoubleCoordinateHex(Hex, ABC):
         self.col = row
 
         assert (row + col) % 2 == 0, f"A doubled coordinate hex must have its coordinates be of the same parity"
+
+    @property
+    def coordinates_in_2d(self) -> tuple[int, int]:
+        return self.row, self.col
 
     def __add__(self, other: Any) -> DoubleCoordinateHex:
         if isinstance(other, DoubleCoordinateHex):
