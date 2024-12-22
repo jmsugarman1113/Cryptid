@@ -1,0 +1,1 @@
+Attempt at a Python implementation of the board game Cryptid to play around with programming with a hexagonal structure
