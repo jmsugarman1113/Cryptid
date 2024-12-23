@@ -23,9 +23,18 @@ class Color(StrEnum):
     BLUE = auto().upper()
     BLACK = auto().upper()
 
+
 class Shape(StrEnum):
     STONE = auto().upper()
     SHACK = auto().upper()
+
+
+class PlayerName(StrEnum):
+    PLAYER1 = auto().upper()
+    PLAYER2 = auto().upper()
+    PLAYER3 = auto().upper()
+    PLAYER4 = auto().upper()
+    PLAYER5 = auto().upper()
 
 
 @dataclass
@@ -39,4 +48,17 @@ class Tile:
     terrain: Terrain
     animal_territory: Optional[AnimalTerritory]
     structure: Optional[Structure]
+
+    def __init__(
+        self,
+        hex: Hex,
+        terrain: Terrain,
+        animal_territory: Optional[AnimalTerritory] = None,
+        structure: Optional[Structure] = None,
+    ):
+        self.hex = hex
+        self.terrain = terrain
+        self.animal_territory = animal_territory
+        self.structure = structure
+
 
