@@ -23,7 +23,30 @@ class Hex(ABC):
     def neighbor_directions(self) -> Annotated[list[Hex], FixedLength(6)]:
         pass
 
-    def __add__(self, other: Any) -> Hex:
+    @property
+    def neighbors(self) -> Annotated[list[Hex], FixedLength(6)]:
+        return [self + dir for dir in self.neighbor_directions]
+
+    def hexes_within_range(self, n: int) -> list[Hex]:
+        output = list()
+        center = self.to_axial_coordinate_hex()
+        for q in range(-n, n + 1):
+            for r in range(max(-n, -n - q), min(n, n - q) + 1):
+                ah: AxialCoordinateHex = center + AxialCoordinateHex(q, r)
+                output.append(self.from_axial_coordinate_hex(ah))
+        return output
+
+    def to_axial_coordinate_hex(self) -> AxialCoordinateHex:
+        return AxialCoordinateHex(self.q, self.r)
+
+    @classmethod
+    def from_axial_coordinate_hex(cls, axial_hex: AxialCoordinateHex) -> Hex:
+        return cls(axial_hex.q, axial_hex.r)
+
+    def __copy__(self) -> Hex:
+        return self.__class__(**{field.name: getattr(self, field.name) for field in fields(self)})
+
+    def __add__(self, other: Any) -> Hex | NotImplemented:
         if isinstance(other, self.__class__):
             return self.__class__(
                 **{
@@ -31,9 +54,9 @@ class Hex(ABC):
                     for field in fields(self)
                 }
             )
-        raise TypeError(f"Can only add the same type of Hexes together.  Trying to add {type(self)} to {type(other)}")
+        return NotImplemented(f"Can only add the same type of Hexes together.  Trying to add {type(self)} to {type(other)}")
 
-    def __sub__(self, other: Any) -> Hex:
+    def __sub__(self, other: Any) -> Hex | NotImplemented:
         if isinstance(other, self.__class__):
             return self.__class__(
                 **{
@@ -41,9 +64,9 @@ class Hex(ABC):
                     for field in fields(self)
                 }
             )
-        raise TypeError(f"Can only add the same type of Hexes together.  Trying to subtract {type(other)} from {type(self)}")
+        return NotImplemented(f"Can only add the same type of Hexes together.  Trying to subtract {type(other)} from {type(self)}")
 
-    def __mul__(self, other: Any) -> Hex:
+    def __mul__(self, other: Any) -> Hex | NotImplemented:
         if isinstance(other, int):
             return self.__class__(
                 **{
@@ -51,23 +74,28 @@ class Hex(ABC):
                     for field in fields(self)
                 }
             )
-        raise TypeError(f"Can only scale Hex's by integers, got {type(other)} instead")
+        return NotImplemented(f"Can only scale Hex's by integers, got {type(other)} instead")
 
-    @property
-    def neighbors(self) -> Annotated[list[Hex], FixedLength(6)]:
-        return [self + dir for dir in self.neighbor_directions]
+    def __radd__(self, other: Any) -> Hex | NotImplemented:
+        return self.__add__(other)
+
+    def __rsub__(self, other: Any) -> Hex | NotImplemented:
+        return self.__sub__(other)
+
+    def __rmul__(self, other: Any) -> Hex | NotImplemented:
+        return self.__mul__(other)
+
+    def __neg__(self) -> Hex:
+        return -1*self
 
     def to_2d_coordinates(self) -> tuple[int, int]:
         return self.q, self.r
 
-    # TODO
-    # @classmethod
-    # @abstractmethod
-    # def from_2d_coordinates(cls, x: int, y: int) -> Hex:
-    #     pass
+    @classmethod
+    def from_2d_coordinates(cls, x: int, y: int) -> Hex:
+        return cls(q=x, r=y)
 
     def __eq__(self, other: Any) -> bool:
-
         if not isinstance(other, self.__class__):
             raise NotImplementedError(f"equality is only defined between the same type of Hexes.  Trying to compare {self.__class__} and {other.__class__} ")
         return self.distance(other) == 0
@@ -81,12 +109,14 @@ class DoubleCoordinateHex(Hex, ABC):
     def ___post_init__(self):
         assert (self.q + self.r) % 2 == 0, f"A doubled coordinate hex must have its coordinates be of the same parity"
 
-    @abstractmethod
-    def to_axial_coordinate_hex(self) -> AxialCoordinateHex:
-        pass
-
     def to_cube_coordinate_hex(self) -> CubeCoordinateHex:
         return self.to_axial_coordinate_hex().to_cube_coordinate_hex()
+
+    @classmethod
+    @abstractmethod
+    def from_cube_coordinate_hex(cls, cube_hex: CubeCoordinateHex) -> DoubleCoordinateHex:
+        pass
+
 
 
 @dataclass(frozen=True)
@@ -110,7 +140,15 @@ class DoubledHeightCoordinateHex(DoubleCoordinateHex):
     def to_axial_coordinate_hex(self) -> AxialCoordinateHex:
         return AxialCoordinateHex(self.r, (self.q - self.r) // 2)
 
-    # TODO: override to_2d to support array?
+    @classmethod
+    def from_axial_coordinate_hex(cls, axial_hex: AxialCoordinateHex) -> DoubledHeightCoordinateHex:
+        return axial_hex.to_double_height_coordinate_hex()
+
+    @classmethod
+    def from_cube_coordinate_hex(cls, cube_hex: CubeCoordinateHex) -> DoubledHeightCoordinateHex:
+        return cube_hex.to_double_height_coordinate_hex()
+
+    # TODO: override to_2d to support array with less wasted space?
 
 
 @dataclass(frozen=True)
@@ -134,15 +172,19 @@ class DoubledWidthCoordinateHex(DoubleCoordinateHex):
     def to_axial_coordinate_hex(self) -> AxialCoordinateHex:
         return AxialCoordinateHex((self.r - self.q) // 2, self.q)
 
-    # TODO: override to_2d to support array?
+    @classmethod
+    def from_axial_coordinate_hex(cls, axial_hex: AxialCoordinateHex) -> DoubledWidthCoordinateHex:
+        return axial_hex.to_double_width_coordinate_hex()
+
+    @classmethod
+    def from_cube_coordinate_hex(cls, cube_hex: CubeCoordinateHex) -> DoubledWidthCoordinateHex:
+        return cube_hex.to_double_width_coordinate_hex()
+
+    # TODO: override to_2d to support array with less wasted space??
 
 
 @dataclass(frozen=True)
 class AxialCoordinateHex(Hex):
-
-    @property
-    def s(self) -> int:
-        return -(self.q + self.r)
 
     @property
     def neighbor_directions(self) -> Annotated[list[AxialCoordinateHex], FixedLength(6)]:
@@ -157,16 +199,29 @@ class AxialCoordinateHex(Hex):
 
     def distance(self, other: AxialCoordinateHex) -> int:
         d = self - other
-        return max(abs(d.q), abs(d.r), abs(d.s))
+        s = -d.q - d.r
+        return max(abs(d.q), abs(d.r), abs(s))
 
     def to_cube_coordinate_hex(self) -> CubeCoordinateHex:
-        return CubeCoordinateHex(self.q, self.r, self.s)
+        return CubeCoordinateHex(self.q, self.r, -self.q - self.r)
+
+    @classmethod
+    def from_cube_coordinate_hex(cls, cube_hex: CubeCoordinateHex) -> AxialCoordinateHex:
+        return cube_hex.to_axial_coordinate_hex()
 
     def to_double_width_coordinate_hex(self) -> DoubledWidthCoordinateHex:
         return DoubledWidthCoordinateHex(2*self.q + self.r, self.r)
 
+    @classmethod
+    def from_double_width_coordinate_hex(cls, double_width_hex: DoubledWidthCoordinateHex) -> AxialCoordinateHex:
+        return double_width_hex.to_axial_coordinate_hex()
+
     def to_double_height_coordinate_hex(self) -> DoubledHeightCoordinateHex:
         return DoubledHeightCoordinateHex(self.q, 2*self.r + self.q)
+
+    @classmethod
+    def from_double_height_coordinate_hex(cls, double_height_hex: DoubledHeightCoordinateHex) -> AxialCoordinateHex:
+        return double_height_hex.to_axial_coordinate_hex()
 
 
 @dataclass(frozen=True)
@@ -175,10 +230,6 @@ class CubeCoordinateHex(AxialCoordinateHex):
 
     def __post_init__(self):
         assert (intercept := (self.q + self.r + self.s)) == 0, f"A Cube Hex must lie in a plane through the origin (q + r + s = 0), got {intercept} instead"
-
-    @property
-    def s(self) -> int:
-        return self.s
 
     @property
     def neighbor_directions(self) -> Annotated[list[CubeCoordinateHex], FixedLength(6)]:
@@ -193,6 +244,16 @@ class CubeCoordinateHex(AxialCoordinateHex):
 
     def to_axial_coordinate_hex(self) -> AxialCoordinateHex:
         return AxialCoordinateHex(self.q, self.r)
+
+    @classmethod
+    def from_axial_coordinate_hex(cls, axial_hex: AxialCoordinateHex) -> CubeCoordinateHex:
+        return axial_hex.to_cube_coordinate_hex()
+
+    @classmethod
+    def from_2d_coordinates(cls, x: int, y: int) -> CubeCoordinateHex:
+        return cls(x, y, -x-y)
+
+
 
 
 
