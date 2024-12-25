@@ -43,22 +43,13 @@ class Structure:
     color: Color
 
 
+@dataclass
 class Tile:
     hex: Hex
     terrain: Terrain
-    animal_territory: Optional[AnimalTerritory]
-    structure: Optional[Structure]
+    animal_territory: Optional[AnimalTerritory] = None
+    structure: Optional[Structure] = None
 
-    def __init__(
-        self,
-        hex: Hex,
-        terrain: Terrain,
-        animal_territory: Optional[AnimalTerritory] = None,
-        structure: Optional[Structure] = None,
-    ):
-        self.hex = hex
-        self.terrain = terrain
-        self.animal_territory = animal_territory
-        self.structure = structure
+
 
 
