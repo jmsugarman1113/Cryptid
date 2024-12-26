@@ -1,10 +1,10 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
-from typing import Any, Annotated
+from typing import Any, Annotated, Optional
 from dataclasses import dataclass, fields
 
 
-@dataclass
+@dataclass(frozen=True)
 class FixedLength:
     length: int
 
@@ -49,6 +49,10 @@ class Hex(ABC):
     @classmethod
     def from_cube_coordinate_hex(cls, cube_hex: CubeCoordinateHex) -> Hex:
         return cls.from_axial_coordinate_hex(cube_hex.to_axial_coordinate_hex())
+
+    @classmethod
+    def origin(cls) -> Hex:
+        return cls(**{field.name: 0 for field in fields(cls)})
 
     def __copy__(self) -> Hex:
         return self.__class__(**{field.name: getattr(self, field.name) for field in fields(self)})
@@ -110,10 +114,13 @@ class Hex(ABC):
     def __ne__(self, other: Any) -> bool:
         return not (self == other)
 
-    def reflect_over(self, other: Hex) -> Hex:
-        if not isinstance(other, self.__class__):
+    def reflect_over_hex(self, other: Optional[Hex] = None) -> Hex:
+        if other is None:
+            other = self.origin()
+        elif not isinstance(other, self.__class__):
             raise NotImplementedError(f"relfection is only defined between the same type of Hex.  Trying to reflect {self.__class__} and {other.__class__}")
-        return 2*other - self
+        # return 2*other - self
+        return self.from_axial_coordinate_hex(2*other.to_axial_coordinate_hex() - self.to_axial_coordinate_hex())
 
 
 @dataclass(frozen=True)
@@ -129,6 +136,11 @@ class OffsetCoordinateHex(Hex, ABC):
     @classmethod
     def from_row_col(cls, row: int, col: int) -> OffsetCoordinateHex:
         return cls(q=col, r=row)
+
+    def distance(self, other: Hex) -> int:
+        if not isinstance(other, self.__class__):
+            raise NotImplementedError(f"distance is only defined between the same type of Hexes.  Trying to compare {self.__class} to {other.__class__}")
+        return self.to_axial_coordinate_hex().distance(other.to_axial_coordinate_hex())
 
 
 @dataclass(frozen=True)
@@ -152,10 +164,10 @@ class DoubledHeightCoordinateHex(DoubleCoordinateHex):
             DoubledHeightCoordinateHex(q=0, r=2),
         ]
 
-    def distance(self, other: DoubledHeightCoordinateHex) -> int:
-        drow = abs(self.row - other.row)
-        dcol = abs(self.col - other.col)
-        return dcol + max(0, (drow-dcol)//2)
+    # def distance(self, other: DoubledHeightCoordinateHex) -> int:
+    #     drow = abs(self.row - other.row)
+    #     dcol = abs(self.col - other.col)
+    #     return dcol + max(0, (drow-dcol)//2)
 
     def to_axial_coordinate_hex(self) -> AxialCoordinateHex:
         return AxialCoordinateHex(self.q, (self.r - self.q) // 2)
@@ -184,10 +196,10 @@ class DoubledWidthCoordinateHex(DoubleCoordinateHex):
             DoubledWidthCoordinateHex(q=1, r=1),
         ]
 
-    def distance(self, other: DoubledWidthCoordinateHex) -> int:
-        dcol = abs(self.col - other.col)
-        drow = abs(self.row - other.row)
-        return drow + max(0, (dcol - drow) // 2)
+    # def distance(self, other: DoubledWidthCoordinateHex) -> int:
+    #     dcol = abs(self.col - other.col)
+    #     drow = abs(self.row - other.row)
+    #     return drow + max(0, (dcol - drow) // 2)
 
     def to_axial_coordinate_hex(self) -> AxialCoordinateHex:
         return AxialCoordinateHex((self.r - self.q) // 2, self.q)
@@ -207,6 +219,10 @@ class DoubledWidthCoordinateHex(DoubleCoordinateHex):
 class AxialCoordinateHex(Hex):
 
     @property
+    def _s(self) -> int:
+        return -self.q - self.r
+
+    @property
     def neighbor_directions(self) -> Annotated[list[AxialCoordinateHex], FixedLength(6)]:
         return [
             AxialCoordinateHex(q=1, r=0),
@@ -219,11 +235,10 @@ class AxialCoordinateHex(Hex):
 
     def distance(self, other: AxialCoordinateHex) -> int:
         d = self - other
-        s = -d.q - d.r
-        return max(abs(d.q), abs(d.r), abs(s))
+        return max(abs(d.q), abs(d.r), abs(d._s))
 
     def to_cube_coordinate_hex(self) -> CubeCoordinateHex:
-        return CubeCoordinateHex(self.q, self.r, -self.q - self.r)
+        return CubeCoordinateHex(self.q, self.r, self._s)
 
     @classmethod
     def from_cube_coordinate_hex(cls, cube_hex: CubeCoordinateHex) -> AxialCoordinateHex:
@@ -243,32 +258,60 @@ class AxialCoordinateHex(Hex):
     def from_double_height_coordinate_hex(cls, double_height_hex: DoubledHeightCoordinateHex) -> AxialCoordinateHex:
         return double_height_hex.to_axial_coordinate_hex()
 
+    def to_even_row_offset_coordinate_hex(self) -> EvenRowOffsetCoordinateHex:
+        return EvenRowOffsetCoordinateHex.from_row_col(row=self.r, col=self.q + (self.r + (self.r & 1)) // 2)
+
+    @classmethod
+    def from_even_row_offset_coordinate(cls, even_row_offset_hex: EvenRowOffsetCoordinateHex) -> AxialCoordinateHex:
+        return even_row_offset_hex.to_axial_coordinate_hex()
+
+    def to_odd_row_offset_coordinate_hex(self) -> OddRowOffsetCoordinateHex:
+        return OddRowOffsetCoordinateHex.from_row_col(row=self.r, col=self.q + (self.r - self.r & 1) // 2)
+
+    @classmethod
+    def from_odd_row_offset_coordinate_hex(cls, odd_row_offset_hex: OddRowOffsetCoordinateHex) -> AxialCoordinateHex:
+        return odd_row_offset_hex.to_axial_coordinate_hex()
+
+    def to_even_column_offset_coordinate_hex(self) -> EvenColumnOffsetCoordinateHex:
+        return EvenColumnOffsetCoordinateHex.from_row_col(row=self.r + (self.q + (self.q & 1)) // 2, col=self.q)
+
+    @classmethod
+    def from_even_column_offset_coordinate_hex(cls, even_column_offset_hex: EvenColumnOffsetCoordinateHex) -> AxialCoordinateHex:
+        return even_column_offset_hex.to_axial_coordinate_hex()
+
+    def to_odd_column_offset_coordinate_hex(self) -> OddColumnOffsetCoordinateHex:
+        return OddColumnOffsetCoordinateHex.from_row_col(row=self.r + (self.q - (self.q & 1)) // 2, col=self.q)
+
+    @classmethod
+    def from_odd_column_offset_coordinate_hex(cls, odd_column_offset_hex: OddColumnOffsetCoordinateHex) -> AxialCoordinateHex:
+        return odd_column_offset_hex.to_axial_coordinate_hex()
+
     def reflect_over_Q_axis(self) -> AxialCoordinateHex:
-        return AxialCoordinateHex(self.q, -self.q-self.r)
+        return self.from_axial_coordinate_hex(AxialCoordinateHex(self.q, self._s))
 
     def reflect_over_R_axis(self) -> AxialCoordinateHex:
-        return AxialCoordinateHex(-self.q-self.r, self.r)
+        return self.from_axial_coordinate_hex(AxialCoordinateHex(self._s, self.r))
 
     def reflect_over_S_axis(self) -> AxialCoordinateHex:
-        return AxialCoordinateHex(self.r, self.q)
+        return self.from_axial_coordinate_hex(AxialCoordinateHex(self.r, self.q))
 
-    # def reflect_over_Q(self, q: int) -> AxialCoordinateHex:
-    #     reference_point = AxialCoordinateHex(0, q)
-    #     shifted = self - reference_point
-    #     reflected = shifted.reflect_over_R_axis()
-    #     return reflected + reference_point
-    #
-    # def reflect_over_R(self, r: int) -> AxialCoordinateHex:
-    #     reference_point = AxialCoordinateHex(r, 0)
-    #     shifted = self - reference_point
-    #     reflected = shifted.reflect_over_Q_axis()
-    #     return reflected + reference_point
-    #
-    # def reflect_over_S(self, s: int) -> AxialCoordinateHex:
-    #     reference_point = AxialCoordinateHex(s, 0)
-    #     shifted = self - reference_point
-    #     reflected = shifted.reflect_over_Q_axis()
-    #     return reflected + reference_point
+    def reflect_over_Q(self, q: int = 0) -> AxialCoordinateHex:
+        reference_point = AxialCoordinateHex(q, 0)
+        shifted = self.to_axial_coordinate_hex() - reference_point
+        reflected = shifted.reflect_over_Q_axis().reflect_over_hex()
+        return self.from_axial_coordinate_hex(reflected + reference_point)
+
+    def reflect_over_R(self, r: int = 0) -> AxialCoordinateHex:
+        reference_point = AxialCoordinateHex(0, r)
+        shifted = self.to_axial_coordinate_hex() - reference_point
+        reflected = shifted.reflect_over_R_axis().reflect_over_hex()
+        return self.from_axial_coordinate_hex(reflected + reference_point)
+
+    def reflect_over_S(self, s: int = 0) -> AxialCoordinateHex:
+        reference_point = AxialCoordinateHex(s, 0)
+        shifted = self.to_axial_coordinate_hex() - reference_point
+        reflected = shifted.reflect_over_S_axis().reflect_over_hex()
+        return self.from_axial_coordinate_hex(reflected + reference_point)
 
 
 @dataclass(frozen=True)
@@ -300,20 +343,35 @@ class CubeCoordinateHex(AxialCoordinateHex):
     def from_2d_coordinates(cls, q: int, r: int) -> CubeCoordinateHex:
         return cls(q=q, r=r, s=-q-r)
 
-    def reflect_over_Q_axis(self) -> CubeCoordinateHex:
-        return CubeCoordinateHex(self.q, self.s, self.r)
-
-    def reflect_over_R_axis(self) -> CubeCoordinateHex:
-        return CubeCoordinateHex(self.s, self.r, self.q)
-
-    def reflect_over_S_axis(self) -> CubeCoordinateHex:
-        return CubeCoordinateHex(self.r, self.q, self.s)
-
 
 @dataclass(frozen=True)
 class EvenRowOffsetCoordinateHex(OffsetCoordinateHex):
     def to_axial_coordinate_hex(self) -> AxialCoordinateHex:
         return AxialCoordinateHex(q=self.col - (self.row + (self.row & 1)) // 2, r=self.row)
+
+    @classmethod
+    def from_axial_coordinate_hex(cls, axial_hex: AxialCoordinateHex) -> EvenRowOffsetCoordinateHex:
+        return axial_hex.to_even_row_offset_coordinate_hex()
+
+    @property
+    def neighbor_directions(self) -> Annotated[list[EvenRowOffsetCoordinateHex], FixedLength(6)]:
+        if self.row & 1:
+            return [
+                EvenRowOffsetCoordinateHex(1, 0),
+                EvenRowOffsetCoordinateHex(0, -1),
+                EvenRowOffsetCoordinateHex(-1, -1),
+                EvenRowOffsetCoordinateHex(-1, 0),
+                EvenRowOffsetCoordinateHex(-1, 1),
+                EvenRowOffsetCoordinateHex(0, 1),
+            ]
+        return [
+            EvenRowOffsetCoordinateHex(1, 0),
+            EvenRowOffsetCoordinateHex(1, -1),
+            EvenRowOffsetCoordinateHex(0, -1),
+            EvenRowOffsetCoordinateHex(-1, 0),
+            EvenRowOffsetCoordinateHex(0, 1),
+            EvenRowOffsetCoordinateHex(1, 1),
+        ]
 
 
 @dataclass(frozen=True)
@@ -321,18 +379,92 @@ class OddRowOffsetCoordinateHex(OffsetCoordinateHex):
     def to_axial_coordinate_hex(self) -> AxialCoordinateHex:
         return AxialCoordinateHex(q=self.col - (self.row - (self.row & 1)) // 2, r=self.row)
 
+    @classmethod
+    def from_axial_coordinate_hex(cls, axial_hex: AxialCoordinateHex) -> OddRowOffsetCoordinateHex:
+        return axial_hex.to_odd_row_offset_coordinate_hex()
+
+    @property
+    def neighbor_directions(self) -> Annotated[list[OddRowOffsetCoordinateHex], FixedLength(6)]:
+        if self.row & 1:
+            return [
+                OddRowOffsetCoordinateHex(1, 0),
+                OddRowOffsetCoordinateHex(1, -1),
+                OddRowOffsetCoordinateHex(0, -1),
+                OddRowOffsetCoordinateHex(-1, 0),
+                OddRowOffsetCoordinateHex(0, 1),
+                OddRowOffsetCoordinateHex(1, 1),
+            ]
+        return [
+            OddRowOffsetCoordinateHex(1, 0),
+            OddRowOffsetCoordinateHex(0, -1),
+            OddRowOffsetCoordinateHex(-1, -1),
+            OddRowOffsetCoordinateHex(-1, 0),
+            OddRowOffsetCoordinateHex(-1, 1),
+            OddRowOffsetCoordinateHex(0, 1),
+        ]
+
 
 @dataclass(frozen=True)
 class EvenColumnOffsetCoordinateHex(OffsetCoordinateHex):
     def to_axial_coordinate_hex(self) -> AxialCoordinateHex:
         return AxialCoordinateHex(q=self.col, r=self.row - (self.col + (self.col & 1)) // 2)
 
+    @classmethod
+    def from_axial_coordinate_hex(cls, axial_hex: AxialCoordinateHex) -> EvenColumnOffsetCoordinateHex:
+        return axial_hex.to_even_column_offset_coordinate_hex()
+
+    @property
+    def neighbor_directions(self) -> Annotated[list[EvenColumnOffsetCoordinateHex], FixedLength(6)]:
+        if self.col & 1:
+            return [
+                EvenColumnOffsetCoordinateHex(1, 0),
+                EvenColumnOffsetCoordinateHex(1, -1),
+                EvenColumnOffsetCoordinateHex(0, -1),
+                EvenColumnOffsetCoordinateHex(-1, -1),
+                EvenColumnOffsetCoordinateHex(-1, 0),
+                EvenColumnOffsetCoordinateHex(0, 1),
+            ]
+        return [
+            EvenColumnOffsetCoordinateHex(1, 1),
+            EvenColumnOffsetCoordinateHex(1, 0),
+            EvenColumnOffsetCoordinateHex(0, -1),
+            EvenColumnOffsetCoordinateHex(-1, 0),
+            EvenColumnOffsetCoordinateHex(-1, 1),
+            EvenColumnOffsetCoordinateHex(0, 1),
+        ]
+
 
 @dataclass(frozen=True)
-class OddColumnffsetCoordinateHex(OffsetCoordinateHex):
+class OddColumnOffsetCoordinateHex(OffsetCoordinateHex):
     def to_axial_coordinate_hex(self) -> AxialCoordinateHex:
         return AxialCoordinateHex(q=self.col, r=self.row - (self.col - (self.col & 1)) // 2)
 
+    @classmethod
+    def from_axial_coordinate_hex(cls, axial_hex: AxialCoordinateHex) -> OddColumnOffsetCoordinateHex:
+        return axial_hex.to_odd_column_offset_coordinate_hex()
+
+    @property
+    def neighbor_directions(self) -> Annotated[list[OddColumnOffsetCoordinateHex], FixedLength(6)]:
+        if self.col & 1:
+            return [
+                OddColumnOffsetCoordinateHex(1, 1),
+                OddColumnOffsetCoordinateHex(1, 0),
+                OddColumnOffsetCoordinateHex(0, -1),
+                OddColumnOffsetCoordinateHex(-1, 0),
+                OddColumnOffsetCoordinateHex(-1, 1),
+                OddColumnOffsetCoordinateHex(0, 1),
+            ]
+        return [
+            OddColumnOffsetCoordinateHex(1, 0),
+            OddColumnOffsetCoordinateHex(1, -1),
+            OddColumnOffsetCoordinateHex(0, -1),
+            OddColumnOffsetCoordinateHex(-1, -1),
+            OddColumnOffsetCoordinateHex(-1, 0),
+            OddColumnOffsetCoordinateHex(0, 1),
+        ]
+
+
+# TODO: either add new to/from methods for the offsets to the other classes, or remove all non axial to/from methods from other classes
 
 
 
