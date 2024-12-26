@@ -16,3 +16,8 @@ if __name__ == "__main__":
 
     B = A.to_cube_coordinate_hex()
     print(B.neighbors)
+
+    C = AxialCoordinateHex(-4, 4)
+    D = AxialCoordinateHex(-2, 1)
+    E = C.reflect_over(D)
+    print(E)

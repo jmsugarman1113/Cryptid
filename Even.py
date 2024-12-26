@@ -3,6 +3,8 @@ from typing import Any
 from numbers import Number
 
 
+# TODO: look at https://github.com/mCodingLLC/VideosSampleCode/blob/master/videos/116_complex_fraction/cfrac.py to make this cleaner
+
 class Even(int):
     def __new__(cls, value: int, *args, **kwargs):
         if not isinstance(value, int) and value % 2 != 0:
