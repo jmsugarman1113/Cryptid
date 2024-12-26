@@ -1,6 +1,7 @@
+from __future__ import annotations
 from enum import StrEnum, auto
-from dataclasses import dataclass
-from typing import Optional
+from dataclasses import dataclass, replace
+from typing import Optional, Any
 from Hex import Hex
 
 
@@ -50,6 +51,25 @@ class Tile:
     animal_territory: Optional[AnimalTerritory] = None
     structure: Optional[Structure] = None
 
+    def __add__(self, other: Any) -> Tile | NotImplemented:
+        if isinstance(other, self.__class__):
+            return replace(self, hex=self.hex + other.hex)
+        if isinstance(other, self.hex.__class__):
+            return replace(self, hex=self.hex + other)
+        return NotImplemented
+
+    def __radd__(self, other: Any) -> Tile | NotImplemented:
+        return self.__add__(other)
+
+    def __sub__(self, other: Any) -> Tile | NotImplemented:
+        if isinstance(other, self.__class__):
+            return replace(self, hex=self.hex - other.hex)
+        if isinstance(other, self.hex.__class__):
+            return replace(self, hex=self.hex - other)
+        return NotImplemented
+
+    def __rsub__(self, other: Any) -> Tile | NotImplemented:
+        return self.__sub__(other)
 
 
 

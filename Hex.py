@@ -112,7 +112,7 @@ class Hex(ABC):
         return self.distance(other) == 0
 
     def __ne__(self, other: Any) -> bool:
-        return not (self == other)
+        return not (self.__eq__(other))
 
     def reflect_over_hex(self, other: Optional[Hex] = None) -> Hex:
         if other is None:
