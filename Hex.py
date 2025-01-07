@@ -65,6 +65,8 @@ class Hex(ABC):
                     for field in fields(self)
                 }
             )
+        elif isinstance(other, Hex):
+            return self.from_axial_coordinate_hex(self.to_axial_coordinate_hex() + other.to_axial_coordinate_hex())
         return NotImplemented(f"Can only add the same type of Hexes together.  Trying to add {type(self)} to {type(other)}")
 
     def __sub__(self, other: Any) -> Hex | NotImplemented:
@@ -75,6 +77,8 @@ class Hex(ABC):
                     for field in fields(self)
                 }
             )
+        elif isinstance(other, Hex):
+            return self.from_axial_coordinate_hex(self.to_axial_coordinate_hex() - other.to_axial_coordinate_hex())
         return NotImplemented(f"Can only add the same type of Hexes together.  Trying to subtract {type(other)} from {type(self)}")
 
     def __mul__(self, other: Any) -> Hex | NotImplemented:
@@ -466,6 +470,6 @@ class OddColumnOffsetCoordinateHex(OffsetCoordinateHex):
 
 # TODO: either add new to/from methods for the offsets to the other classes, or remove all non axial to/from methods from other classes
 
-
+# TODO: fix vector operations in the single offset hexes.  can either abstract out vector operations and reorg the class heiarchy, override the 4 classes, or define all vector opps in terms of axial coordinates by converting to and from
 
 
