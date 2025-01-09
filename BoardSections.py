@@ -8,19 +8,18 @@ from dataclasses import dataclass
 
 @dataclass
 class BoardSection:
-    tiles: Annotated[dict[tuple[int, int], Tile], FixedLength[18]]
+    tiles: Annotated[dict[Hex, Tile], FixedLength[18]]
 
     def offset(self, offset_hex: Hex) -> BoardSection:
         new_tiles = dict()
         for k, tile in self.tiles.items():
             new_tile: Tile = tile + offset_hex
-            new_key = new_tile.hex.to_2d_coordinates()
-            new_tiles[new_key] = new_tile
+            new_tiles[new_tile.hex] = new_tile
         return BoardSection(tiles=new_tiles)
 
     @classmethod
     def from_tile_list(cls, tile_list: Annotated[list[Tile], FixedLength[18]]) -> BoardSection:
-        return cls(tiles={tile.hex.to_2d_coordinates(): tile for tile in tile_list})
+        return cls(tiles={tile.hex: tile for tile in tile_list})
 
 
 SECTION_1: Final[BoardSection] = BoardSection.from_tile_list([

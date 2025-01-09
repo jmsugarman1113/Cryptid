@@ -9,7 +9,7 @@ from typing import Optional, Any, Final, Annotated
 
 @dataclass
 class Board:
-    tiles: Annotated[dict[tuple[int, int], Tile], FixedLength[108]]
+    tiles: Annotated[dict[Hex, Tile], FixedLength[108]]
 
     @classmethod
     def from_board_sections(cls, order: list[int]) -> Board:
@@ -19,4 +19,4 @@ class Board:
         return cls(tiles=tiles)
 
     def place_structure(self, structure: Structure, location: Hex):
-        self.tiles[location.to_2d_coordinates()].structure = structure
+        self.tiles[location].structure = structure
