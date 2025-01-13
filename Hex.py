@@ -54,9 +54,56 @@ class Hex(ABC):
     def origin(cls) -> Hex:
         return cls(**{field.name: 0 for field in fields(cls)})
 
+    def reflect_over_hex(self, other: Optional[Hex] = None) -> Hex:
+        if other is None:
+            other = self.origin()
+        elif not isinstance(other, self.__class__):
+            raise NotImplementedError(f"relfection is only defined between the same type of Hex.  Trying to reflect {self.__class__} and {other.__class__}")
+        # return 2*other - self
+        return self.from_axial_coordinate_hex(2*other.to_axial_coordinate_hex() - self.to_axial_coordinate_hex())
+
+    def to_2d_coordinates(self) -> tuple[int, int]:
+        return self.q, self.r
+
+    @classmethod
+    def from_2d_coordinates(cls, q: int, r: int) -> Hex:
+        return cls(q=q, r=r)
+
     def __copy__(self) -> Hex:
         return self.__class__(**{field.name: getattr(self, field.name) for field in fields(self)})
 
+    def __eq__(self, other: Any) -> bool:
+        if not isinstance(other, self.__class__):
+            raise NotImplementedError(f"equality is only defined between the same type of Hexes.  Trying to compare {self.__class__} and {other.__class__} ")
+        return self.distance(other) == 0
+
+    def __ne__(self, other: Any) -> bool:
+        return not (self.__eq__(other))
+
+    def __add__(self, other: Any) -> Hex | NotImplemented:
+        if isinstance(other, Hex):
+            return self.from_axial_coordinate_hex(self.to_axial_coordinate_hex() + other.to_axial_coordinate_hex())
+        return NotImplemented
+
+    def __sub__(self, other: Any) -> Hex | NotImplemented:
+        if isinstance(other, Hex):
+            return self.from_axial_coordinate_hex(self.to_axial_coordinate_hex() - other.to_axial_coordinate_hex())
+        return NotImplemented
+
+    def __mul__(self, other: Any) -> Hex | NotImplemented:
+        if isinstance(other, int):
+            return self.from_axial_coordinate_hex(other * self.to_axial_coordinate_hex())
+        return NotImplemented
+
+    def __rmul__(self, other: Any) -> Hex | NotImplemented:
+        return self.__mul__(other)
+
+    def __neg__(self) -> Hex | NotImplemented:
+        return -1*self
+
+
+@dataclass(frozen=True)
+class VectorHex(Hex, ABC):
     def __add__(self, other: Any) -> Hex | NotImplemented:
         if isinstance(other, self.__class__):
             return self.__class__(
@@ -66,7 +113,7 @@ class Hex(ABC):
                 }
             )
         elif isinstance(other, Hex):
-            return self.from_axial_coordinate_hex(self.to_axial_coordinate_hex() + other.to_axial_coordinate_hex())
+            return super().__add__(other)
         return NotImplemented(f"Can only add the same type of Hexes together.  Trying to add {type(self)} to {type(other)}")
 
     def __sub__(self, other: Any) -> Hex | NotImplemented:
@@ -78,7 +125,7 @@ class Hex(ABC):
                 }
             )
         elif isinstance(other, Hex):
-            return self.from_axial_coordinate_hex(self.to_axial_coordinate_hex() - other.to_axial_coordinate_hex())
+            return super().__sub__(other)
         return NotImplemented(f"Can only add the same type of Hexes together.  Trying to subtract {type(other)} from {type(self)}")
 
     def __mul__(self, other: Any) -> Hex | NotImplemented:
@@ -103,29 +150,6 @@ class Hex(ABC):
     def __neg__(self) -> Hex:
         return -1*self
 
-    def to_2d_coordinates(self) -> tuple[int, int]:
-        return self.q, self.r
-
-    @classmethod
-    def from_2d_coordinates(cls, q: int, r: int) -> Hex:
-        return cls(q=q, r=r)
-
-    def __eq__(self, other: Any) -> bool:
-        if not isinstance(other, self.__class__):
-            raise NotImplementedError(f"equality is only defined between the same type of Hexes.  Trying to compare {self.__class__} and {other.__class__} ")
-        return self.distance(other) == 0
-
-    def __ne__(self, other: Any) -> bool:
-        return not (self.__eq__(other))
-
-    def reflect_over_hex(self, other: Optional[Hex] = None) -> Hex:
-        if other is None:
-            other = self.origin()
-        elif not isinstance(other, self.__class__):
-            raise NotImplementedError(f"relfection is only defined between the same type of Hex.  Trying to reflect {self.__class__} and {other.__class__}")
-        # return 2*other - self
-        return self.from_axial_coordinate_hex(2*other.to_axial_coordinate_hex() - self.to_axial_coordinate_hex())
-
 
 @dataclass(frozen=True)
 class OffsetCoordinateHex(Hex, ABC):
@@ -148,7 +172,7 @@ class OffsetCoordinateHex(Hex, ABC):
 
 
 @dataclass(frozen=True)
-class DoubleCoordinateHex(OffsetCoordinateHex, ABC):
+class DoubleCoordinateHex(OffsetCoordinateHex, VectorHex, ABC):
     # q is col
     # r is row
     def ___post_init__(self):
@@ -220,7 +244,7 @@ class DoubledWidthCoordinateHex(DoubleCoordinateHex):
 
 
 @dataclass(frozen=True)
-class AxialCoordinateHex(Hex):
+class AxialCoordinateHex(VectorHex):
 
     @property
     def _s(self) -> int:
@@ -466,10 +490,3 @@ class OddColumnOffsetCoordinateHex(OffsetCoordinateHex):
             OddColumnOffsetCoordinateHex(-1, 0),
             OddColumnOffsetCoordinateHex(0, 1),
         ]
-
-
-# TODO: either add new to/from methods for the offsets to the other classes, or remove all non axial to/from methods from other classes
-
-# TODO: fix vector operations in the single offset hexes.  can either abstract out vector operations and reorg the class heiarchy, override the 4 classes, or define all vector opps in terms of axial coordinates by converting to and from
-
-
