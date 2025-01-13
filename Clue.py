@@ -37,7 +37,7 @@ class OnOneOfTwoTerrainClue(Clue):
     """
     Cryptid is in one of two habitats
     """
-    valid_terrains: Annotated[list[Terrain], FixedLength[2]]
+    valid_terrains: Annotated[list[Terrain], FixedLength(2)]
     negated: bool = False
 
     def resolve(self, tile: Tile, board: Board) -> bool:

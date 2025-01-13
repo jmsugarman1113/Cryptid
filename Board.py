@@ -9,14 +9,14 @@ from typing import Optional, Any, Final, Annotated
 
 @dataclass
 class Board:
-    tiles: Annotated[dict[Hex, Tile], FixedLength[108]]
+    tiles: Annotated[dict[Hex, Tile], FixedLength(108)]
 
     @classmethod
-    def from_board_sections(cls, order: list[int]) -> Board:
+    def from_board_sections(cls, order: Annotated[list[int], FixedLength(6)]) -> Board:
         tiles = dict()
-        for offset, idx in enumerate(order):
-            tiles |= BOARD_SECTIONS[idx-1].offset(BOARD_SECTION_OFFSETS[offset])
+        for offset, board_section in enumerate(order):
+            tiles |= BOARD_SECTIONS[board_section-1].offset(BOARD_SECTION_OFFSETS[offset])
         return cls(tiles=tiles)
 
-    def place_structure(self, structure: Structure, location: Hex):
+    def place_structure(self, structure: Structure, location: Hex) -> None:
         self.tiles[location].structure = structure

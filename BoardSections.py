@@ -8,7 +8,7 @@ from dataclasses import dataclass
 
 @dataclass
 class BoardSection:
-    tiles: Annotated[dict[Hex, Tile], FixedLength[18]]
+    tiles: Annotated[dict[Hex, Tile], FixedLength(18)]
 
     def offset(self, offset_hex: Hex) -> BoardSection:
         new_tiles = dict()
@@ -18,7 +18,7 @@ class BoardSection:
         return BoardSection(tiles=new_tiles)
 
     @classmethod
-    def from_tile_list(cls, tile_list: Annotated[list[Tile], FixedLength[18]]) -> BoardSection:
+    def from_tile_list(cls, tile_list: Annotated[list[Tile], FixedLength(18)]) -> BoardSection:
         return cls(tiles={tile.hex: tile for tile in tile_list})
 
 
@@ -149,11 +149,11 @@ SECTION_6: Final[BoardSection] = BoardSection.from_tile_list([
 ])
 
 
-BOARD_SECTIONS: Final[Annotated[list[BoardSection], FixedLength[6]]] = [
+BOARD_SECTIONS: Final[Annotated[list[BoardSection], FixedLength(6)]] = [
     SECTION_1, SECTION_2, SECTION_3, SECTION_4, SECTION_5, SECTION_6
 ]
 
-BOARD_SECTION_OFFSETS: Final[Annotated[list[DoubledHeightCoordinateHex], FixedLength[6]]] = [
+BOARD_SECTION_OFFSETS: Final[Annotated[list[DoubledHeightCoordinateHex], FixedLength(6)]] = [
     DoubledHeightCoordinateHex.from_row_col(col=0, row=0),
     DoubledHeightCoordinateHex.from_row_col(col=0, row=6),
     DoubledHeightCoordinateHex.from_row_col(col=0, row=12),
