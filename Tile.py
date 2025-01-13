@@ -26,8 +26,8 @@ class Color(StrEnum):
 
 
 class Shape(StrEnum):
-    STONE = auto().upper()
-    SHACK = auto().upper()
+    STANDING_STONE = auto().upper()
+    ABANDONED_SHACK = auto().upper()
 
 
 class PlayerName(StrEnum):
