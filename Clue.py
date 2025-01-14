@@ -1,7 +1,7 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Annotated, Final, ClassVar
+from typing import Annotated, Final
 from Hex import FixedLength
 from Tile import Tile, Terrain, AnimalTerritory, Shape, Color
 from Board import Board
@@ -190,6 +190,57 @@ RED_CLUES: Final[Annotated[list[Clue], FixedLength(96)]] = [
     OnOneOfTwoTerrainClue(valid_terrains=[Terrain.DESERT, Terrain.WATER], negated=True),
     WithinTwoSpacesOfAnimalTerritoryClue(animal_territory=AnimalTerritory.COUGAR, negated=True),
     WithinTwoSpacesOfShapeClue(shape=Shape.ABANDONED_SHACK, negated=True),
+
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.DESERT, Terrain.WATER]),
+    WithinOneSpaceOfTerrainClue(terrain=Terrain.WATER),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.DESERT, Terrain.WATER]),
+    WithinOneSpaceOfTerrainClue(terrain=Terrain.SWAMP),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.FOREST, Terrain.MOUNTAIN]),
+    WithinOneSpaceOfTerrainClue(terrain=Terrain.FOREST),
+    WithinThreeSpacesOfColorClue(color=Color.BLACK),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.FOREST, Terrain.SWAMP], negated=True),
+    WithinThreeSpacesOfColorClue(color=Color.GREEN),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.DESERT, Terrain.SWAMP]),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.SWAMP, Terrain.MOUNTAIN], negated=True),
+    WithinThreeSpacesOfColorClue(color=Color.BLUE),
+    WithinOneSpaceOfTerrainClue(terrain=Terrain.MOUNTAIN, negated=True),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.FOREST, Terrain.DESERT], negated=True),
+    WithinTwoSpacesOfAnimalTerritoryClue(animal_territory=AnimalTerritory.BEAR, negated=True),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.SWAMP, Terrain.MOUNTAIN], negated=True),
+    WithinTwoSpacesOfShapeClue(shape=Shape.ABANDONED_SHACK, negated=True),
+    WithinThreeSpacesOfColorClue(color=Color.WHITE, negated=True),
+    WithinOneSpaceOfTerrainClue(terrain=Terrain.DESERT, negated=True),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.WATER, Terrain.SWAMP]),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.DESERT, Terrain.MOUNTAIN], negated=True),
+    WithinTwoSpacesOfShapeClue(shape=Shape.STANDING_STONE),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.WATER, Terrain.SWAMP], negated=True),
+    WithinTwoSpacesOfAnimalTerritoryClue(animal_territory=AnimalTerritory.COUGAR),
+
+    WithinOneSpaceOfEitherAnimalTerritoryClue(negated=True),
+    WithinOneSpaceOfEitherAnimalTerritoryClue(),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.DESERT, Terrain.SWAMP], negated=True),
+    WithinOneSpaceOfTerrainClue(terrain=Terrain.MOUNTAIN),
+    WithinThreeSpacesOfColorClue(color=Color.WHITE, negated=True),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.FOREST, Terrain.SWAMP]),
+    WithinTwoSpacesOfShapeClue(shape=Shape.STANDING_STONE),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.DESERT, Terrain.MOUNTAIN]),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.FOREST, Terrain.DESERT]),
+    WithinOneSpaceOfTerrainClue(terrain=Terrain.SWAMP, negated=True),
+    WithinThreeSpacesOfColorClue(color=Color.BLACK, negated=True),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.SWAMP, Terrain.WATER], negated=True),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.DESERT, Terrain.SWAMP]),
+    WithinThreeSpacesOfColorClue(color=Color.GREEN, negated=True),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.DESERT, Terrain.MOUNTAIN], negated=True),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.FOREST, Terrain.MOUNTAIN], negated=True),
+    WithinOneSpaceOfTerrainClue(terrain=Terrain.DESERT),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.DESERT, Terrain.MOUNTAIN]),
+    WithinOneSpaceOfTerrainClue(terrain=Terrain.DESERT, negated=True),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.FOREST, Terrain.SWAMP]),
+    WithinOneSpaceOfTerrainClue(terrain=Terrain.DESERT),
+    WithinTwoSpacesOfShapeClue(shape=Shape.STANDING_STONE, negated=True),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.WATER, Terrain.MOUNTAIN], negated=True),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.SWAMP, Terrain.MOUNTAIN]),
+
 ]
 
 GREEN_CLUES: Final[Annotated[list[Clue], FixedLength(96)]] = [
