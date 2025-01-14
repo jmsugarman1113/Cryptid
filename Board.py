@@ -5,6 +5,7 @@ from Tile import Tile, Shape, Color, Structure
 from Hex import Hex, FixedLength
 from dataclasses import dataclass
 from typing import Optional, Any, Final, Annotated
+from SetupCard import SetupCard
 
 
 @dataclass
@@ -20,3 +21,10 @@ class Board:
 
     def place_structure(self, structure: Structure, location: Hex) -> None:
         self.tiles[location].structure = structure
+
+    @classmethod
+    def from_setup_card(cls, card: SetupCard) -> Board:
+        board = cls.from_board_sections(card.board_sections)
+        for location, structure in card.structures:
+            board.place_structure(structure, location)
+        return board
