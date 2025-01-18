@@ -1,4 +1,8 @@
 from Hex import AxialCoordinateHex, CubeCoordinateHex, DoubledHeightCoordinateHex, DoubledWidthCoordinateHex
+from Tile import Tile, Shape, Color, Structure, Terrain, AnimalTerritory
+from Clue import *
+from BoardSections import *
+
 
 if __name__ == "__main__":
 
@@ -32,3 +36,17 @@ if __name__ == "__main__":
     print(C.reflect_over_Q(q=-2))
     # print(C.reflect_over_R(r=0))
     # print(C.reflect_over_S(s=0))
+
+
+    print()
+    print()
+    clue = GREEN_CLUES[1]
+    print(clue)
+    print(repr(clue))
+
+    h, tile = next(iter(BOARD_SECTIONS[0].tiles.items()))
+    print(tile)
+    print(str(tile))
+
+    print(Terrain.WATER.value)
+

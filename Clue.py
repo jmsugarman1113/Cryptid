@@ -1,20 +1,24 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
-from typing import Annotated, Final
+from dataclasses import dataclass, KW_ONLY
+from typing import Annotated, Final, TYPE_CHECKING
 from Hex import FixedLength
 from Tile import Tile, Terrain, AnimalTerritory, Shape, Color
-from Board import Board
+
+if TYPE_CHECKING:
+    from Board import Board
 
 
 @dataclass(frozen=True)
 class Clue(ABC):
     """
     Clue describing where the cryptid can or cannot be located
-
-    :param negated: if a clue should be logically negated
     """
-    negated: bool
+
+    @property
+    @abstractmethod
+    def neg(self) -> bool:
+        pass
 
     @abstractmethod
     def resolve(self, tile: Tile, board: Board) -> bool:
@@ -34,7 +38,7 @@ class Clue(ABC):
         :return: if the cryptid can be there
         """
         output = self.resolve(tile, board)
-        return output if not self.negated else not output
+        return output if not self.neg else not output
 
     @abstractmethod
     def describe(self) -> str:
@@ -46,7 +50,7 @@ class Clue(ABC):
         pass
 
     def __str__(self) -> str:
-        not_str = "not " if self.negated else ""
+        not_str = "not " if self.neg else ""
         return f"The habitat is {not_str}{self.describe()}"
 
 
@@ -57,6 +61,10 @@ class OnOneOfTwoTerrainClue(Clue):
     """
     valid_terrains: Annotated[list[Terrain], FixedLength(2)]
     negated: bool = False
+
+    @property
+    def neg(self) -> bool:
+        return self.negated
 
     def resolve(self, tile: Tile, board: Board) -> bool:
         return tile.terrain in self.valid_terrains
@@ -72,6 +80,10 @@ class WithinOneSpaceOfTerrainClue(Clue):
     """
     terrain: Terrain
     negated: bool = False
+
+    @property
+    def neg(self) -> bool:
+        return self.negated
 
     def resolve(self, tile: Tile, board: Board) -> bool:
         possible_hex_locations = tile.hex.hexes_within_range(1)
@@ -93,6 +105,10 @@ class WithinOneSpaceOfEitherAnimalTerritoryClue(Clue):
     """
     negated: bool = False
 
+    @property
+    def neg(self) -> bool:
+        return self.negated
+
     def resolve(self, tile: Tile, board: Board) -> bool:
         possible_hex_locations = tile.hex.hexes_within_range(1)
         for hex in possible_hex_locations:
@@ -113,6 +129,10 @@ class WithinTwoSpacesOfShapeClue(Clue):
     """
     shape: Shape
     negated: bool = False
+
+    @property
+    def neg(self) -> bool:
+        return self.negated
 
     def resolve(self, tile: Tile, board: Board) -> bool:
         possible_hex_locations = tile.hex.hexes_within_range(2)
@@ -136,6 +156,10 @@ class WithinTwoSpacesOfAnimalTerritoryClue(Clue):
     animal_territory: AnimalTerritory
     negated: bool = False
 
+    @property
+    def neg(self) -> bool:
+        return self.negated
+
     def resolve(self, tile: Tile, board: Board) -> bool:
         possible_hex_locations = tile.hex.hexes_within_range(2)
         for hex in possible_hex_locations:
@@ -156,6 +180,10 @@ class WithinThreeSpacesOfColorClue(Clue):
     """
     color: Color
     negated: bool = False
+
+    @property
+    def neg(self) -> bool:
+        return self.negated
 
     def resolve(self, tile: Tile, board: Board) -> bool:
         possible_hex_locations = tile.hex.hexes_within_range(3)
