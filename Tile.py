@@ -43,6 +43,9 @@ class Structure:
     shape: Shape
     color: Color
 
+    def __str__(self) -> str:
+        return f"Structure(shape={self.shape.value}, color={self.color.value})"
+
 
 @dataclass
 class Tile:
@@ -70,6 +73,18 @@ class Tile:
 
     def __rsub__(self, other: Any) -> Tile | NotImplemented:
         return self.__sub__(other)
+
+    def __str__(self) -> str:
+        attr_strs = [
+            f"hex={str(self.hex)}",
+            f"terrain={self.terrain.value}",
+        ]
+        if self.animal_territory is not None:
+            attr_strs.append(f"animal_territory={self.animal_territory.value}")
+        if self.structure is not None:
+            attr_strs.append(f"structure={str(self.structure)}")
+        attr_str = ", ".join(attr_strs)
+        return f"Tile({attr_str})"
 
 
 

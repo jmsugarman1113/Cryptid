@@ -101,6 +101,10 @@ class Hex(ABC):
     def __neg__(self) -> Hex | NotImplemented:
         return -1*self
 
+    def __str__(self) -> str:
+        field_str = ", ".join([f"{field.name}={getattr(self, field.name)}" for field in fields(self)])
+        return f"{self.__class__.__name__}({field_str})"
+
 
 @dataclass(frozen=True)
 class VectorHex(Hex, ABC):
@@ -114,7 +118,7 @@ class VectorHex(Hex, ABC):
             )
         elif isinstance(other, Hex):
             return super().__add__(other)
-        return NotImplemented(f"Can only add the same type of Hexes together.  Trying to add {type(self)} to {type(other)}")
+        return NotImplemented(f"Can only add Hexes together.  Trying to add {type(self)} to {type(other)}")
 
     def __sub__(self, other: Any) -> Hex | NotImplemented:
         if isinstance(other, self.__class__):
@@ -126,7 +130,7 @@ class VectorHex(Hex, ABC):
             )
         elif isinstance(other, Hex):
             return super().__sub__(other)
-        return NotImplemented(f"Can only add the same type of Hexes together.  Trying to subtract {type(other)} from {type(self)}")
+        return NotImplemented(f"Can only subtract Hexes from each other.  Trying to subtract {type(other)} from {type(self)}")
 
     def __mul__(self, other: Any) -> Hex | NotImplemented:
         if isinstance(other, int):
