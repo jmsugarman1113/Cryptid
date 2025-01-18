@@ -9,6 +9,11 @@ from Board import Board
 
 @dataclass(frozen=True)
 class Clue(ABC):
+    """
+    Clue describing where the cryptid can or cannot be located
+
+    :param negated: if a clue should be logically negated
+    """
     negated: bool
 
     @abstractmethod
@@ -42,7 +47,7 @@ class Clue(ABC):
 
     def __str__(self) -> str:
         not_str = "not " if self.negated else ""
-        return f"The habitat is {not_str} {self.describe()}"
+        return f"The habitat is {not_str}{self.describe()}"
 
 
 @dataclass(frozen=True)
@@ -268,6 +273,55 @@ RED_CLUES: Final[Annotated[list[Clue], FixedLength(96)]] = [
 ]
 
 GREEN_CLUES: Final[Annotated[list[Clue], FixedLength(96)]] = [
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.DESERT, Terrain.SWAMP]),
+    WithinTwoSpacesOfAnimalTerritoryClue(animal_territory=AnimalTerritory.COUGAR),
+    WithinThreeSpacesOfColorClue(color=Color.BLUE),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.FOREST, Terrain.SWAMP], negated=True),
+    WithinThreeSpacesOfColorClue(color=Color.GREEN),
+    WithinOneSpaceOfTerrainClue(terrain=Terrain.DESERT),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.DESERT, Terrain.SWAMP], negated=True),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.FOREST, Terrain.SWAMP]),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.WATER, Terrain.SWAMP], negated=True),
+    WithinThreeSpacesOfColorClue(color=Color.BLACK, negated=True),
+    WithinTwoSpacesOfShapeClue(shape=Shape.ABANDONED_SHACK),
+    WithinOneSpaceOfTerrainClue(terrain=Terrain.DESERT, negated=True),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.FOREST, Terrain.WATER]),
+    WithinThreeSpacesOfColorClue(color=Color.WHITE, negated=True),
+    WithinOneSpaceOfEitherAnimalTerritoryClue(negated=True),
+    WithinTwoSpacesOfAnimalTerritoryClue(animal_territory=AnimalTerritory.BEAR),
+    WithinOneSpaceOfTerrainClue(terrain=Terrain.WATER),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.SWAMP, Terrain.MOUNTAIN], negated=True),
+    WithinOneSpaceOfTerrainClue(terrain=Terrain.MOUNTAIN),
+    WithinThreeSpacesOfColorClue(color=Color.BLACK, negated=True),
+    WithinOneSpaceOfTerrainClue(terrain=Terrain.SWAMP, negated=True),
+    WithinThreeSpacesOfColorClue(color=Color.BLACK),
+    WithinThreeSpacesOfColorClue(color=Color.GREEN, negated=True),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.FOREST, Terrain.DESERT], negated=True),
+
+    WithinOneSpaceOfTerrainClue(terrain=Terrain.SWAMP),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.FOREST, Terrain.MOUNTAIN], negated=True),
+    WithinTwoSpacesOfAnimalTerritoryClue(animal_territory=AnimalTerritory.BEAR, negated=True),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.FOREST, Terrain.MOUNTAIN]),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.SWAMP, Terrain.MOUNTAIN]),
+    WithinTwoSpacesOfAnimalTerritoryClue(animal_territory=AnimalTerritory.COUGAR, negated=True),
+    WithinTwoSpacesOfShapeClue(shape=Shape.STANDING_STONE, negated=True),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.WATER, Terrain.SWAMP]),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.DESERT, Terrain.WATER]),
+    WithinThreeSpacesOfColorClue(color=Color.BLUE),
+    WithinTwoSpacesOfShapeClue(shape=Shape.STANDING_STONE),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.WATER, Terrain.MOUNTAIN]),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.FOREST, Terrain.SWAMP], negated=True),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.WATER, Terrain.SWAMP], negated=True),
+    WithinTwoSpacesOfShapeClue(shape=Shape.ABANDONED_SHACK, negated=True),
+    WithinOneSpaceOfTerrainClue(terrain=Terrain.MOUNTAIN, negated=True),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.DESERT, Terrain.MOUNTAIN], negated=True),
+    WithinOneSpaceOfTerrainClue(terrain=Terrain.FOREST),
+    WithinTwoSpacesOfAnimalTerritoryClue(animal_territory=AnimalTerritory.BEAR),
+    WithinOneSpaceOfEitherAnimalTerritoryClue(negated=True),
+    WithinThreeSpacesOfColorClue(color=Color.GREEN),
+    WithinOneSpaceOfEitherAnimalTerritoryClue(),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.DESERT, Terrain.MOUNTAIN]),
+    WithinTwoSpacesOfAnimalTerritoryClue(animal_territory=AnimalTerritory.BEAR, negated=True),
 
 ]
 
