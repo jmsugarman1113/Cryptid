@@ -5,37 +5,43 @@ from typing import Optional, Any
 from Hex import Hex
 
 
-class Terrain(StrEnum):
-    WATER = auto().upper()
-    MOUNTAIN = auto().upper()
-    FOREST = auto().upper()
-    SWAMP = auto().upper()
-    DESERT = auto().upper()
+class UpperStrEnum(StrEnum):
+    @staticmethod
+    def _generate_next_value_(name: str, start, count, last_values) -> str:
+        return name.upper()
 
 
-class AnimalTerritory(StrEnum):
-    BEAR = auto().upper()
-    COUGAR = auto().upper()
+class Terrain(UpperStrEnum):
+    WATER = auto()
+    MOUNTAIN = auto()
+    FOREST = auto()
+    SWAMP = auto()
+    DESERT = auto()
 
 
-class Color(StrEnum):
-    WHITE = auto().upper()
-    GREEN = auto().upper()
-    BLUE = auto().upper()
-    BLACK = auto().upper()
+class AnimalTerritory(UpperStrEnum):
+    BEAR = auto()
+    COUGAR = auto()
 
 
-class Shape(StrEnum):
-    STANDING_STONE = auto().upper()
-    ABANDONED_SHACK = auto().upper()
+class Color(UpperStrEnum):
+    WHITE = auto()
+    GREEN = auto()
+    BLUE = auto()
+    BLACK = auto()
 
 
-class PlayerName(StrEnum):
-    PLAYER1 = auto().upper()
-    PLAYER2 = auto().upper()
-    PLAYER3 = auto().upper()
-    PLAYER4 = auto().upper()
-    PLAYER5 = auto().upper()
+class Shape(UpperStrEnum):
+    STANDING_STONE = auto()
+    ABANDONED_SHACK = auto()
+
+
+class PlayerName(UpperStrEnum):
+    PLAYER1 = auto()
+    PLAYER2 = auto()
+    PLAYER3 = auto()
+    PLAYER4 = auto()
+    PLAYER5 = auto()
 
 
 @dataclass
@@ -74,17 +80,17 @@ class Tile:
     def __rsub__(self, other: Any) -> Tile | NotImplemented:
         return self.__sub__(other)
 
-    def __str__(self) -> str:
-        attr_strs = [
-            f"hex={str(self.hex)}",
-            f"terrain={self.terrain.value}",
-        ]
-        if self.animal_territory is not None:
-            attr_strs.append(f"animal_territory={self.animal_territory.value}")
-        if self.structure is not None:
-            attr_strs.append(f"structure={str(self.structure)}")
-        attr_str = ", ".join(attr_strs)
-        return f"Tile({attr_str})"
+    # def __str__(self) -> str:
+    #     attr_strs = [
+    #         f"hex={str(self.hex)}",
+    #         f"terrain=Terrain.{self.terrain.value}",
+    #     ]
+    #     if self.animal_territory is not None:
+    #         attr_strs.append(f"animal_territory={self.animal_territory.value}")
+    #     if self.structure is not None:
+    #         attr_strs.append(f"structure={str(self.structure)}")
+    #     attr_str = ", ".join(attr_strs)
+    #     return f"Tile({attr_str})"
 
 
 
