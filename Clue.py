@@ -1,7 +1,7 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
-from dataclasses import dataclass, KW_ONLY
-from typing import Annotated, Final, TYPE_CHECKING
+from dataclasses import dataclass
+from typing import Annotated, Final, TYPE_CHECKING, Any
 from Hex import FixedLength
 from Tile import Tile, Terrain, AnimalTerritory, Shape, Color
 
@@ -62,6 +62,19 @@ class OnOneOfTwoTerrainClue(Clue):
     valid_terrains: Annotated[list[Terrain], FixedLength(2)]
     negated: bool = False
 
+    def __post_init__(self):
+        if len(self.valid_terrains) != 2:
+            raise ValueError("must pass 2 valid terrains")
+
+    def __hash__(self) -> int:
+        terrains_sorted = sorted(self.valid_terrains)
+        return hash((terrains_sorted[0], terrains_sorted[1], self.negated))
+
+    def __eq__(self, other: Any) -> bool:
+        if not isinstance(other, self.__class__):
+            raise TypeError(f"can only compare same types of clues, trying to compare {type(self)} to {type(other)}")
+        return (self.negated == other.negated) and (sorted(self.valid_terrains) == sorted(other.valid_terrains))
+
     @property
     def neg(self) -> bool:
         return self.negated
@@ -86,8 +99,7 @@ class WithinOneSpaceOfTerrainClue(Clue):
         return self.negated
 
     def resolve(self, tile: Tile, board: Board) -> bool:
-        possible_hex_locations = tile.hex.hexes_within_range(1)
-        for hex in possible_hex_locations:
+        for hex in tile.hex.hexes_within_range(1):
             if (possible_tile := board.tiles.get(hex, None)) is not None:
                 if possible_tile.terrain == self.terrain:
                     return True
@@ -110,8 +122,7 @@ class WithinOneSpaceOfEitherAnimalTerritoryClue(Clue):
         return self.negated
 
     def resolve(self, tile: Tile, board: Board) -> bool:
-        possible_hex_locations = tile.hex.hexes_within_range(1)
-        for hex in possible_hex_locations:
+        for hex in tile.hex.hexes_within_range(1):
             if (possible_tile := board.tiles.get(hex, None)) is not None:
                 if possible_tile.animal_territory is not None:
                     return True
@@ -135,8 +146,7 @@ class WithinTwoSpacesOfShapeClue(Clue):
         return self.negated
 
     def resolve(self, tile: Tile, board: Board) -> bool:
-        possible_hex_locations = tile.hex.hexes_within_range(2)
-        for hex in possible_hex_locations:
+        for hex in tile.hex.hexes_within_range(2):
             if (possible_tile := board.tiles.get(hex, None)) is not None:
                 if getattr(possible_tile.structure, 'shape', None) == self.shape:
                     return True
@@ -144,7 +154,7 @@ class WithinTwoSpacesOfShapeClue(Clue):
         # return any((possible_tile := board.tiles.get(hex, None)) is not None and getattr(possible_tile.structure, 'shape', None) == self.shape for hex in curr_tile.hex.hexes_within_range(2))
 
     def describe(self) -> str:
-        shape_str = ' '.join(self.shape.value.lower().split('_'))
+        shape_str = self.shape.value.lower().replace('_', ' ')
         return f"within two spaces of a {shape_str}"
 
 
@@ -161,8 +171,7 @@ class WithinTwoSpacesOfAnimalTerritoryClue(Clue):
         return self.negated
 
     def resolve(self, tile: Tile, board: Board) -> bool:
-        possible_hex_locations = tile.hex.hexes_within_range(2)
-        for hex in possible_hex_locations:
+        for hex in tile.hex.hexes_within_range(2):
             if (possible_tile := board.tiles.get(hex, None)) is not None:
                 if possible_tile.animal_territory == self.animal_territory:
                     return True
@@ -186,8 +195,7 @@ class WithinThreeSpacesOfColorClue(Clue):
         return self.negated
 
     def resolve(self, tile: Tile, board: Board) -> bool:
-        possible_hex_locations = tile.hex.hexes_within_range(3)
-        for hex in possible_hex_locations:
+        for hex in tile.hex.hexes_within_range(3):
             if (possible_tile := board.tiles.get(hex, None)) is not None:
                 if getattr(possible_tile.structure, 'color', None) == self.color:
                     return True
@@ -351,6 +359,30 @@ GREEN_CLUES: Final[Annotated[list[Clue], FixedLength(96)]] = [
     OnOneOfTwoTerrainClue(valid_terrains=[Terrain.DESERT, Terrain.MOUNTAIN]),
     WithinTwoSpacesOfAnimalTerritoryClue(animal_territory=AnimalTerritory.BEAR, negated=True),
 
+    WithinOneSpaceOfTerrainClue(terrain=Terrain.MOUNTAIN),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.DESERT, Terrain.WATER], negated=True),
+    WithinOneSpaceOfTerrainClue(terrain=Terrain.FOREST, negated=True),
+    WithinTwoSpacesOfShapeClue(shape=Shape.ABANDONED_SHACK, negated=True),
+    WithinTwoSpacesOfShapeClue(shape=Shape.ABANDONED_SHACK),
+    WithinOneSpaceOfTerrainClue(terrain=Terrain.SWAMP),
+    WithinOneSpaceOfTerrainClue(terrain=Terrain.DESERT, negated=True),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.DESERT, Terrain.SWAMP], negated=True),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.DESERT, Terrain.MOUNTAIN], negated=True),
+    WithinThreeSpacesOfColorClue(color=Color.BLACK),
+    WithinOneSpaceOfTerrainClue(terrain=Terrain.FOREST, negated=True),
+    WithinThreeSpacesOfColorClue(color=Color.BLUE, negated=True),
+    WithinOneSpaceOfTerrainClue(terrain=Terrain.WATER),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.FOREST, Terrain.WATER]),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.DESERT, Terrain.WATER], negated=True),
+    WithinThreeSpacesOfColorClue(color=Color.WHITE),
+    WithinTwoSpacesOfShapeClue(shape=Shape.STANDING_STONE),
+    WithinTwoSpacesOfAnimalTerritoryClue(animal_territory=AnimalTerritory.COUGAR),
+    WithinOneSpaceOfEitherAnimalTerritoryClue(),
+    WithinOneSpaceOfTerrainClue(terrain=Terrain.WATER, negated=True),
+    WithinThreeSpacesOfColorClue(color=Color.BLUE, negated=True),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.FOREST, Terrain.DESERT], negated=True),
+    WithinOneSpaceOfTerrainClue(terrain=Terrain.FOREST),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.FOREST, Terrain.MOUNTAIN], negated=True),
 ]
 
 BLUE_CLUES: Final[Annotated[list[Clue], FixedLength(96)]] = [
