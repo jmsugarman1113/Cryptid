@@ -63,8 +63,10 @@ class OnOneOfTwoTerrainClue(Clue):
     negated: bool = False
 
     def __post_init__(self):
-        if len(self.valid_terrains) != 2:
-            raise ValueError("must pass 2 valid terrains")
+        if (num_terrains := len(self.valid_terrains)) != 2:
+            raise ValueError(f"must pass 2 valid terrains, got {num_terrains} instead")
+        if self.valid_terrains[0] == self.valid_terrains[1]:
+            raise ValueError(f"must pass 2 different valid terrains, got 2 of {self.valid_terrains[0].value} instead")
 
     def __hash__(self) -> int:
         terrains_sorted = sorted(self.valid_terrains)
@@ -383,6 +385,31 @@ GREEN_CLUES: Final[Annotated[list[Clue], FixedLength(96)]] = [
     OnOneOfTwoTerrainClue(valid_terrains=[Terrain.FOREST, Terrain.DESERT], negated=True),
     WithinOneSpaceOfTerrainClue(terrain=Terrain.FOREST),
     OnOneOfTwoTerrainClue(valid_terrains=[Terrain.FOREST, Terrain.MOUNTAIN], negated=True),
+
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.DESERT, Terrain.SWAMP]),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.WATER, Terrain.MOUNTAIN]),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.SWAMP, Terrain.MOUNTAIN], negated=True),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.FOREST, Terrain.DESERT]),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.DESERT, Terrain.WATER]),
+    WithinThreeSpacesOfColorClue(color=Color.WHITE, negated=True),
+    WithinThreeSpacesOfColorClue(color=Color.WHITE),
+    WithinOneSpaceOfTerrainClue(terrain=Terrain.DESERT),
+    WithinOneSpaceOfTerrainClue(terrain=Terrain.MOUNTAIN, negated=True),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.FOREST, Terrain.DESERT]),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.FOREST, Terrain.MOUNTAIN]),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.WATER, Terrain.MOUNTAIN], negated=True),
+    WithinOneSpaceOfTerrainClue(terrain=Terrain.WATER, negated=True),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.WATER, Terrain.SWAMP]),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.FOREST, Terrain.WATER], negated=True),
+    WithinTwoSpacesOfAnimalTerritoryClue(animal_territory=AnimalTerritory.COUGAR, negated=True),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.DESERT, Terrain.MOUNTAIN]),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.FOREST, Terrain.SWAMP]),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.WATER, Terrain.MOUNTAIN], negated=True),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.SWAMP, Terrain.SWAMP]),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.FOREST, Terrain.WATER], negated=True),
+    WithinTwoSpacesOfShapeClue(shape=Shape.STANDING_STONE, negated=True),
+    WithinThreeSpacesOfColorClue(color=Color.GREEN, negated=True),
+    WithinOneSpaceOfTerrainClue(terrain=Terrain.SWAMP, negated=True),
 ]
 
 BLUE_CLUES: Final[Annotated[list[Clue], FixedLength(96)]] = [
