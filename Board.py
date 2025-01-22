@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from BoardSections import BoardSection, BOARD_SECTION_OFFSETS, BOARD_SECTIONS
-from Tile import Tile, Shape, Color, Structure
+from BoardSections import BOARD_SECTION_OFFSETS, BOARD_SECTIONS
+from Tile import Tile, Structure
 from Hex import Hex, FixedLength
 from dataclasses import dataclass
-from typing import Optional, Any, Final, Annotated
+from typing import Annotated
 from SetupCard import SetupCard
 
 

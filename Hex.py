@@ -58,7 +58,7 @@ class Hex(ABC):
         if other is None:
             other = self.origin()
         elif not isinstance(other, self.__class__):
-            raise NotImplementedError(f"relfection is only defined between the same type of Hex.  Trying to reflect {self.__class__} and {other.__class__}")
+            raise NotImplementedError(f"reflection is only defined between the same type of Hex.  Trying to reflect {self.__class__} and {other.__class__}")
         # return 2*other - self
         return self.from_axial_coordinate_hex(2*other.to_axial_coordinate_hex() - self.to_axial_coordinate_hex())
 

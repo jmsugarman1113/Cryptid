@@ -91,6 +91,3 @@ class Tile:
     #         attr_strs.append(f"structure={str(self.structure)}")
     #     attr_str = ", ".join(attr_strs)
     #     return f"Tile({attr_str})"
-
-
-
