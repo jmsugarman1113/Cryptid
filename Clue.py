@@ -44,7 +44,7 @@ class Clue(ABC):
     def describe(self) -> str:
         """
         describes the clue in plain english
-        converts back to the language of the clue in the cluebook
+        converts back to the language of the clue in the clue book
         :return: str
         """
         pass
@@ -101,12 +101,16 @@ class WithinOneSpaceOfTerrainClue(Clue):
         return self.negated
 
     def resolve(self, tile: Tile, board: Board) -> bool:
-        for hex in tile.hex.hexes_within_range(1):
-            if (possible_tile := board.tiles.get(hex, None)) is not None:
+        for possible_hex in tile.hex.hexes_within_range(1):
+            if (possible_tile := board.tiles.get(possible_hex, None)) is not None:
                 if possible_tile.terrain == self.terrain:
                     return True
         return False
-        # return any((possible_tile := board.tiles.get(hex, None)) is not None and possible_tile.terrain == self.terrain for hex in curr_tile.hex.hexes_within_range(1))
+        # return any(
+        #   (possible_tile := board.tiles.get(possible_hex, None)) is not None
+        #   and possible_tile.terrain == self.terrain
+        #   for possible_hex in curr_tile.hex.hexes_within_range(1)
+        # )
 
     def describe(self) -> str:
         return f"within one space of {self.terrain.value.lower()}"
@@ -124,12 +128,16 @@ class WithinOneSpaceOfEitherAnimalTerritoryClue(Clue):
         return self.negated
 
     def resolve(self, tile: Tile, board: Board) -> bool:
-        for hex in tile.hex.hexes_within_range(1):
-            if (possible_tile := board.tiles.get(hex, None)) is not None:
+        for possible_hex in tile.hex.hexes_within_range(1):
+            if (possible_tile := board.tiles.get(possible_hex, None)) is not None:
                 if possible_tile.animal_territory is not None:
                     return True
         return False
-        # return any((possible_tile := board.tiles.get(hex, None)) is not None and possible_tile.animal_territory is not None for hex in curr_tile.hex.hexes_within_range(1))
+        # return any(
+        #   (possible_tile := board.tiles.get(possible_hex, None)) is not None
+        #   and possible_tile.animal_territory is not None
+        #   for possible_hex in curr_tile.hex.hexes_within_range(1)
+        # )
 
     def describe(self) -> str:
         return f"within one space of either animal territory"
@@ -138,7 +146,7 @@ class WithinOneSpaceOfEitherAnimalTerritoryClue(Clue):
 @dataclass(frozen=True)
 class WithinTwoSpacesOfShapeClue(Clue):
     """
-    Cruptid is within 2 spaces of a specific type (shape) of structure
+    Cryptid is within 2 spaces of a specific type (shape) of structure
     """
     shape: Shape
     negated: bool = False
@@ -148,12 +156,16 @@ class WithinTwoSpacesOfShapeClue(Clue):
         return self.negated
 
     def resolve(self, tile: Tile, board: Board) -> bool:
-        for hex in tile.hex.hexes_within_range(2):
-            if (possible_tile := board.tiles.get(hex, None)) is not None:
+        for possible_hex in tile.hex.hexes_within_range(2):
+            if (possible_tile := board.tiles.get(possible_hex, None)) is not None:
                 if getattr(possible_tile.structure, 'shape', None) == self.shape:
                     return True
         return False
-        # return any((possible_tile := board.tiles.get(hex, None)) is not None and getattr(possible_tile.structure, 'shape', None) == self.shape for hex in curr_tile.hex.hexes_within_range(2))
+        # return any(
+        #   (possible_tile := board.tiles.get(possible_hex, None)) is not None
+        #   and getattr(possible_tile.structure, 'shape', None) == self.shape
+        #   for possible_hex in curr_tile.hex.hexes_within_range(2)
+        # )
 
     def describe(self) -> str:
         shape_str = self.shape.value.lower().replace('_', ' ')
@@ -173,12 +185,16 @@ class WithinTwoSpacesOfAnimalTerritoryClue(Clue):
         return self.negated
 
     def resolve(self, tile: Tile, board: Board) -> bool:
-        for hex in tile.hex.hexes_within_range(2):
-            if (possible_tile := board.tiles.get(hex, None)) is not None:
+        for possible_hex in tile.hex.hexes_within_range(2):
+            if (possible_tile := board.tiles.get(possible_hex, None)) is not None:
                 if possible_tile.animal_territory == self.animal_territory:
                     return True
         return False
-        # return any((possible_tile := board.tiles.get(hex, None)) is not None and possible_tile.animal_territory == self.animal_territory for hex in curr_tile.hex.hexes_within_range(2))
+        # return any(
+        #   (possible_tile := board.tiles.get(possible_hex, None)) is not None
+        #   and possible_tile.animal_territory == self.animal_territory
+        #   for possible_hex in curr_tile.hex.hexes_within_range(2)
+        # )
 
     def describe(self) -> str:
         return f"within two spaces of {self.animal_territory.value.lower()} territory"
@@ -197,12 +213,16 @@ class WithinThreeSpacesOfColorClue(Clue):
         return self.negated
 
     def resolve(self, tile: Tile, board: Board) -> bool:
-        for hex in tile.hex.hexes_within_range(3):
-            if (possible_tile := board.tiles.get(hex, None)) is not None:
+        for possible_hex in tile.hex.hexes_within_range(3):
+            if (possible_tile := board.tiles.get(possible_hex, None)) is not None:
                 if getattr(possible_tile.structure, 'color', None) == self.color:
                     return True
         return False
-        # return any((possible_tile := board.tiles.get(hex, None)) is not None and getattr(possible_tile.structure, 'color', None) == self.shape for hex in curr_tile.hex.hexes_within_range(3))
+        # return any(
+        #   (possible_tile := board.tiles.get(possible_hex, None)) is not None
+        #   and getattr(possible_tile.structure, 'color', None) == self.shape
+        #   for possible_hex in curr_tile.hex.hexes_within_range(3)
+        # )
 
     def describe(self) -> str:
         return f"within three spaces of a {self.color.value.lower()} structure"
@@ -413,6 +433,55 @@ GREEN_CLUES: Final[Annotated[list[Clue], FixedLength(96)]] = [
 ]
 
 BLUE_CLUES: Final[Annotated[list[Clue], FixedLength(96)]] = [
+    WithinThreeSpacesOfColorClue(color=Color.BLUE),
+    WithinOneSpaceOfTerrainClue(terrain=Terrain.WATER),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.WATER, Terrain.MOUNTAIN], negated=True),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.FOREST, Terrain.SWAMP]),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.DESERT, Terrain.WATER], negated=True),
+    WithinThreeSpacesOfColorClue(color=Color.BLUE),
+    WithinOneSpaceOfTerrainClue(terrain=Terrain.DESERT, negated=True),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.FOREST, Terrain.SWAMP], negated=True),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.FOREST, Terrain.WATER], negated=True),
+    WithinTwoSpacesOfShapeClue(shape=Shape.STANDING_STONE, negated=True),
+    WithinThreeSpacesOfColorClue(color=Color.GREEN),
+    WithinTwoSpacesOfShapeClue(shape=Shape.STANDING_STONE),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.FOREST, Terrain.WATER]),
+    WithinThreeSpacesOfColorClue(color=Color.BLACK, negated=True),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.FOREST, Terrain.SWAMP], negated=True),
+    WithinTwoSpacesOfShapeClue(shape=Shape.STANDING_STONE, negated=True),
+    WithinOneSpaceOfTerrainClue(terrain=Terrain.MOUNTAIN, negated=True),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.DESERT, Terrain.MOUNTAIN]),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.DESERT, Terrain.SWAMP], negated=True),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.DESERT, Terrain.SWAMP]),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.FOREST, Terrain.DESERT]),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.FOREST, Terrain.DESERT], negated=True),
+    WithinOneSpaceOfTerrainClue(terrain=Terrain.MOUNTAIN),
+    WithinOneSpaceOfTerrainClue(terrain=Terrain.SWAMP, negated=True),
+
+    WithinThreeSpacesOfColorClue(color=Color.BLACK),
+    WithinThreeSpacesOfColorClue(color=Color.BLUE, negated=True),
+    WithinOneSpaceOfTerrainClue(terrain=Terrain.FOREST),
+    WithinThreeSpacesOfColorClue(color=Color.WHITE),
+    WithinOneSpaceOfEitherAnimalTerritoryClue(),
+    WithinThreeSpacesOfColorClue(color=Color.WHITE, negated=True),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.WATER, Terrain.SWAMP]),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.SWAMP, Terrain.MOUNTAIN]),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.DESERT, Terrain.SWAMP], negated=True),
+    WithinThreeSpacesOfColorClue(color=Color.GREEN, negated=True),
+    WithinThreeSpacesOfColorClue(color=Color.GREEN),
+    WithinOneSpaceOfTerrainClue(terrain=Terrain.FOREST),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.DESERT, Terrain.WATER], negated=True),
+    WithinTwoSpacesOfAnimalTerritoryClue(animal_territory=AnimalTerritory.BEAR, negated=True),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.WATER, Terrain.MOUNTAIN]),
+    WithinThreeSpacesOfColorClue(color=Color.WHITE),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.WATER, Terrain.MOUNTAIN]),
+    WithinThreeSpacesOfColorClue(color=Color.BLUE, negated=True),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.FOREST, Terrain.MOUNTAIN]),
+    WithinTwoSpacesOfAnimalTerritoryClue(animal_territory=AnimalTerritory.BEAR),
+    WithinOneSpaceOfTerrainClue(terrain=Terrain.SWAMP, negated=True),
+    WithinOneSpaceOfTerrainClue(terrain=Terrain.FOREST, negated=True),
+    WithinThreeSpacesOfColorClue(color=Color.BLACK),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.DESERT, Terrain.SWAMP]),
 
 ]
 
