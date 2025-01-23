@@ -425,7 +425,7 @@ GREEN_CLUES: Final[Annotated[list[Clue], FixedLength(96)]] = [
     OnOneOfTwoTerrainClue(valid_terrains=[Terrain.DESERT, Terrain.MOUNTAIN]),
     OnOneOfTwoTerrainClue(valid_terrains=[Terrain.FOREST, Terrain.SWAMP]),
     OnOneOfTwoTerrainClue(valid_terrains=[Terrain.WATER, Terrain.MOUNTAIN], negated=True),
-    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.SWAMP, Terrain.SWAMP]),
+    OnOneOfTwoTerrainClue(valid_terrains=[Terrain.SWAMP, Terrain.MOUNTAIN]),
     OnOneOfTwoTerrainClue(valid_terrains=[Terrain.FOREST, Terrain.WATER], negated=True),
     WithinTwoSpacesOfShapeClue(shape=Shape.STANDING_STONE, negated=True),
     WithinThreeSpacesOfColorClue(color=Color.GREEN, negated=True),
