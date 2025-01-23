@@ -59,6 +59,7 @@ class OnOneOfTwoTerrainClue(Clue):
     """
     Cryptid is in one of two habitats
     """
+
     valid_terrains: Annotated[list[Terrain], FixedLength(2)]
     negated: bool = False
 
@@ -93,6 +94,7 @@ class WithinOneSpaceOfTerrainClue(Clue):
     """
     Cryptid is either on or adjacent to a specific terrain
     """
+
     terrain: Terrain
     negated: bool = False
 
@@ -121,6 +123,7 @@ class WithinOneSpaceOfEitherAnimalTerritoryClue(Clue):
     """
     Cryptid is either on or adjacent to any animal territory
     """
+
     negated: bool = False
 
     @property
@@ -148,6 +151,7 @@ class WithinTwoSpacesOfShapeClue(Clue):
     """
     Cryptid is within 2 spaces of a specific type (shape) of structure
     """
+
     shape: Shape
     negated: bool = False
 
@@ -158,7 +162,7 @@ class WithinTwoSpacesOfShapeClue(Clue):
     def resolve(self, tile: Tile, board: Board) -> bool:
         for possible_hex in tile.hex.hexes_within_range(2):
             if (possible_tile := board.tiles.get(possible_hex, None)) is not None:
-                if getattr(possible_tile.structure, 'shape', None) == self.shape:
+                if getattr(possible_tile.structure, "shape", None) == self.shape:
                     return True
         return False
         # return any(
@@ -168,7 +172,7 @@ class WithinTwoSpacesOfShapeClue(Clue):
         # )
 
     def describe(self) -> str:
-        shape_str = self.shape.value.lower().replace('_', ' ')
+        shape_str = self.shape.value.lower().replace("_", " ")
         return f"within two spaces of a {shape_str}"
 
 
@@ -177,6 +181,7 @@ class WithinTwoSpacesOfAnimalTerritoryClue(Clue):
     """
     Cryptid is within 2 spaces a specific animal territory
     """
+
     animal_territory: AnimalTerritory
     negated: bool = False
 
@@ -205,6 +210,7 @@ class WithinThreeSpacesOfColorClue(Clue):
     """
     Cryptid is within 3 spaces of a color of structure
     """
+
     color: Color
     negated: bool = False
 
@@ -215,7 +221,7 @@ class WithinThreeSpacesOfColorClue(Clue):
     def resolve(self, tile: Tile, board: Board) -> bool:
         for possible_hex in tile.hex.hexes_within_range(3):
             if (possible_tile := board.tiles.get(possible_hex, None)) is not None:
-                if getattr(possible_tile.structure, 'color', None) == self.color:
+                if getattr(possible_tile.structure, "color", None) == self.color:
                     return True
         return False
         # return any(
@@ -228,6 +234,7 @@ class WithinThreeSpacesOfColorClue(Clue):
         return f"within three spaces of a {self.color.value.lower()} structure"
 
 
+# fmt: off
 RED_CLUES: Final[Annotated[list[Clue], FixedLength(96)]] = [
     WithinTwoSpacesOfAnimalTerritoryClue(animal_territory=AnimalTerritory.BEAR),
     OnOneOfTwoTerrainClue(valid_terrains=[Terrain.WATER, Terrain.MOUNTAIN]),
@@ -541,6 +548,7 @@ BROWN_CLUES: Final[Annotated[list[Clue], FixedLength(96)]] = [
 PURPLE_CLUES: Final[Annotated[list[Clue], FixedLength(96)]] = [
 
 ]
+# fmt: on
 
 
 # name aliases based on player symbols, may delete later

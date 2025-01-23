@@ -58,9 +58,9 @@ class Hex(ABC):
         if other is None:
             other = self.origin()
         elif not isinstance(other, self.__class__):
-            raise NotImplementedError(f"reflection is only defined between the same type of Hex.  Trying to reflect {self.__class__} and {other.__class__}")
+            raise NotImplementedError(f"reflection is only defined between the same type of Hex.  Trying to reflect {self.__class__} and {other.__class__}")  # fmt: skip
         # return 2*other - self
-        return self.from_axial_coordinate_hex(2*other.to_axial_coordinate_hex() - self.to_axial_coordinate_hex())
+        return self.from_axial_coordinate_hex(2 * other.to_axial_coordinate_hex() - self.to_axial_coordinate_hex())
 
     def to_2d_coordinates(self) -> tuple[int, int]:
         return self.q, self.r
@@ -74,7 +74,7 @@ class Hex(ABC):
 
     def __eq__(self, other: Any) -> bool:
         if not isinstance(other, self.__class__):
-            raise NotImplementedError(f"equality is only defined between the same type of Hexes.  Trying to compare {self.__class__} and {other.__class__} ")
+            raise NotImplementedError(f"equality is only defined between the same type of Hexes.  Trying to compare {self.__class__} and {other.__class__} ")  # fmt: skip
         return self.distance(other) == 0
 
     def __ne__(self, other: Any) -> bool:
@@ -99,7 +99,7 @@ class Hex(ABC):
         return self.__mul__(other)
 
     def __neg__(self) -> Hex | NotImplemented:
-        return -1*self
+        return -1 * self
 
     def __str__(self) -> str:
         field_str = ", ".join([f"{field.name}={getattr(self, field.name)}" for field in fields(self)])
@@ -111,10 +111,7 @@ class VectorHex(Hex, ABC):
     def __add__(self, other: Any) -> Hex | NotImplemented:
         if isinstance(other, self.__class__):
             return self.__class__(
-                **{
-                    field.name: getattr(self, field.name) + getattr(other, field.name)
-                    for field in fields(self)
-                }
+                **{field.name: getattr(self, field.name) + getattr(other, field.name) for field in fields(self)}
             )
         elif isinstance(other, Hex):
             return super().__add__(other)
@@ -123,23 +120,15 @@ class VectorHex(Hex, ABC):
     def __sub__(self, other: Any) -> Hex | NotImplemented:
         if isinstance(other, self.__class__):
             return self.__class__(
-                **{
-                    field.name: getattr(self, field.name) - getattr(other, field.name)
-                    for field in fields(self)
-                }
+                **{field.name: getattr(self, field.name) - getattr(other, field.name) for field in fields(self)}
             )
         elif isinstance(other, Hex):
             return super().__sub__(other)
-        return NotImplemented(f"Can only subtract Hexes from each other.  Trying to subtract {type(other)} from {type(self)}")
+        return NotImplemented(f"Can only subtract Hexes from each other.  Trying to subtract {type(other)} from {type(self)}")  # fmt: skip
 
     def __mul__(self, other: Any) -> Hex | NotImplemented:
         if isinstance(other, int):
-            return self.__class__(
-                **{
-                    field.name: other*getattr(self, field.name)
-                    for field in fields(self)
-                }
-            )
+            return self.__class__(**{field.name: other * getattr(self, field.name) for field in fields(self)})
         return NotImplemented(f"Can only scale Hex's by integers, got {type(other)} instead")
 
     # def __radd__(self, other: Any) -> Hex | NotImplemented:
@@ -152,7 +141,7 @@ class VectorHex(Hex, ABC):
         return self.__mul__(other)
 
     def __neg__(self) -> Hex:
-        return -1*self
+        return -1 * self
 
 
 @dataclass(frozen=True)
@@ -171,7 +160,7 @@ class OffsetCoordinateHex(Hex, ABC):
 
     def distance(self, other: Hex) -> int:
         if not isinstance(other, self.__class__):
-            raise NotImplementedError(f"distance is only defined between the same type of Hexes.  Trying to compare {self.__class} to {other.__class__}")
+            raise NotImplementedError(f"distance is only defined between the same type of Hexes.  Trying to compare {self.__class__} to {other.__class__}")  # fmt: skip
         return self.to_axial_coordinate_hex().distance(other.to_axial_coordinate_hex())
 
 
@@ -180,7 +169,7 @@ class DoubleCoordinateHex(OffsetCoordinateHex, VectorHex, ABC):
     # q is col
     # r is row
     def ___post_init__(self):
-        assert (self.q + self.r) % 2 == 0, "A doubled coordinate hex must have its coordinates be of the same parity"
+        assert (self.q + self.r) % 2 == 0, "A doubled coordinate hex must have its coordinates be of the same parity"  # fmt: skip
 
 
 @dataclass(frozen=True)
@@ -249,7 +238,6 @@ class DoubledWidthCoordinateHex(DoubleCoordinateHex):
 
 @dataclass(frozen=True)
 class AxialCoordinateHex(VectorHex):
-
     @property
     def _s(self) -> int:
         return -self.q - self.r
@@ -277,14 +265,14 @@ class AxialCoordinateHex(VectorHex):
         return cube_hex.to_axial_coordinate_hex()
 
     def to_double_width_coordinate_hex(self) -> DoubledWidthCoordinateHex:
-        return DoubledWidthCoordinateHex.from_row_col(col=2*self.q + self.r, row=self.r)
+        return DoubledWidthCoordinateHex.from_row_col(col=2 * self.q + self.r, row=self.r)
 
     @classmethod
     def from_double_width_coordinate_hex(cls, double_width_hex: DoubledWidthCoordinateHex) -> AxialCoordinateHex:
         return double_width_hex.to_axial_coordinate_hex()
 
     def to_double_height_coordinate_hex(self) -> DoubledHeightCoordinateHex:
-        return DoubledHeightCoordinateHex.from_row_col(col=self.q, row=2*self.r + self.q)
+        return DoubledHeightCoordinateHex.from_row_col(col=self.q, row=2 * self.r + self.q)
 
     @classmethod
     def from_double_height_coordinate_hex(cls, double_height_hex: DoubledHeightCoordinateHex) -> AxialCoordinateHex:
@@ -308,14 +296,18 @@ class AxialCoordinateHex(VectorHex):
         return EvenColumnOffsetCoordinateHex.from_row_col(row=self.r + (self.q + (self.q & 1)) // 2, col=self.q)
 
     @classmethod
-    def from_even_column_offset_coordinate_hex(cls, even_column_offset_hex: EvenColumnOffsetCoordinateHex) -> AxialCoordinateHex:
+    def from_even_column_offset_coordinate_hex(
+        cls, even_column_offset_hex: EvenColumnOffsetCoordinateHex
+    ) -> AxialCoordinateHex:
         return even_column_offset_hex.to_axial_coordinate_hex()
 
     def to_odd_column_offset_coordinate_hex(self) -> OddColumnOffsetCoordinateHex:
         return OddColumnOffsetCoordinateHex.from_row_col(row=self.r + (self.q - (self.q & 1)) // 2, col=self.q)
 
     @classmethod
-    def from_odd_column_offset_coordinate_hex(cls, odd_column_offset_hex: OddColumnOffsetCoordinateHex) -> AxialCoordinateHex:
+    def from_odd_column_offset_coordinate_hex(
+        cls, odd_column_offset_hex: OddColumnOffsetCoordinateHex
+    ) -> AxialCoordinateHex:
         return odd_column_offset_hex.to_axial_coordinate_hex()
 
     def reflect_over_Q_axis(self) -> AxialCoordinateHex:
@@ -351,7 +343,7 @@ class CubeCoordinateHex(AxialCoordinateHex):
     s: int
 
     def __post_init__(self):
-        assert (intercept := (self.q + self.r + self.s)) == 0, f"A Cube Hex must lie in a plane through the origin (q + r + s = 0), got {intercept} instead"
+        assert (intercept := (self.q + self.r + self.s)) == 0, f"A Cube Hex must lie in a plane through the origin (q + r + s = 0), got {intercept} instead"  # fmt: skip
 
     @property
     def neighbor_directions(self) -> Annotated[list[CubeCoordinateHex], FixedLength(6)]:
@@ -373,7 +365,7 @@ class CubeCoordinateHex(AxialCoordinateHex):
 
     @classmethod
     def from_2d_coordinates(cls, q: int, r: int) -> CubeCoordinateHex:
-        return cls(q=q, r=r, s=-q-r)
+        return cls(q=q, r=r, s=-q - r)
 
 
 @dataclass(frozen=True)

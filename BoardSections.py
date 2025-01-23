@@ -22,6 +22,7 @@ class BoardSection:
         return cls(tiles={tile.hex: tile for tile in tile_list})
 
 
+# fmt: off
 SECTION_1: Final[BoardSection] = BoardSection.from_tile_list([
     Tile(hex=DoubledHeightCoordinateHex.from_row_col(col=0, row=0), terrain=Terrain.WATER),
     Tile(hex=DoubledHeightCoordinateHex.from_row_col(col=0, row=2), terrain=Terrain.SWAMP),
@@ -147,10 +148,16 @@ SECTION_6: Final[BoardSection] = BoardSection.from_tile_list([
     Tile(hex=DoubledHeightCoordinateHex.from_row_col(col=5, row=3), terrain=Terrain.FOREST),
     Tile(hex=DoubledHeightCoordinateHex.from_row_col(col=5, row=5), terrain=Terrain.FOREST),
 ])
+# fmt: on
 
 
 BOARD_SECTIONS: Final[Annotated[list[BoardSection], FixedLength(6)]] = [
-    SECTION_1, SECTION_2, SECTION_3, SECTION_4, SECTION_5, SECTION_6
+    SECTION_1,
+    SECTION_2,
+    SECTION_3,
+    SECTION_4,
+    SECTION_5,
+    SECTION_6,
 ]
 
 BOARD_SECTION_OFFSETS: Final[Annotated[list[DoubledHeightCoordinateHex], FixedLength(6)]] = [
