@@ -1,0 +1,9 @@
+[project]
+name = "cryptid"
+version = "0.1.0"
+description = "Python Implimentation of Boardgame Cryptid https://www.playcryptid.com"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "ruff>=0.9.2",
+]
