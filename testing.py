@@ -1,11 +1,10 @@
 from Hex import AxialCoordinateHex
 from Tile import Terrain
-from Clue import *
-from BoardSections import *
+from Clue import GREEN_CLUES
+from BoardSections import BOARD_SECTIONS
 
 
 if __name__ == "__main__":
-
     # A = AxialCoordinateHex(0, 0)
     #
     # print(A.neighbors)
@@ -37,7 +36,6 @@ if __name__ == "__main__":
     # print(C.reflect_over_R(r=0))
     # print(C.reflect_over_S(s=0))
 
-
     print()
     print()
     clue = GREEN_CLUES[1]
@@ -49,4 +47,3 @@ if __name__ == "__main__":
     print(str(tile))
 
     print(Terrain.WATER.value)
-
