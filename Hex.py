@@ -180,7 +180,7 @@ class DoubleCoordinateHex(OffsetCoordinateHex, VectorHex, ABC):
     # q is col
     # r is row
     def ___post_init__(self):
-        assert (self.q + self.r) % 2 == 0, f"A doubled coordinate hex must have its coordinates be of the same parity"
+        assert (self.q + self.r) % 2 == 0, "A doubled coordinate hex must have its coordinates be of the same parity"
 
 
 @dataclass(frozen=True)

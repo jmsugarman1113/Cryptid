@@ -1,5 +1,5 @@
-from Hex import AxialCoordinateHex, CubeCoordinateHex, DoubledHeightCoordinateHex, DoubledWidthCoordinateHex
-from Tile import Tile, Shape, Color, Structure, Terrain, AnimalTerritory
+from Hex import AxialCoordinateHex
+from Tile import Terrain
 from Clue import *
 from BoardSections import *
 

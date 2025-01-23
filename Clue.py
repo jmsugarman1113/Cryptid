@@ -140,7 +140,7 @@ class WithinOneSpaceOfEitherAnimalTerritoryClue(Clue):
         # )
 
     def describe(self) -> str:
-        return f"within one space of either animal territory"
+        return "within one space of either animal territory"
 
 
 @dataclass(frozen=True)
