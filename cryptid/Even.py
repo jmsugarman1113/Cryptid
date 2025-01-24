@@ -1,7 +1,7 @@
 from __future__ import annotations
-from typing import Any
-from numbers import Number
 
+from numbers import Number
+from typing import Any
 
 # TODO: look at https://github.com/mCodingLLC/VideosSampleCode/blob/master/videos/116_complex_fraction/cfrac.py to make this cleaner
 

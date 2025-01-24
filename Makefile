@@ -2,13 +2,14 @@ py-format:
 	ruff format
 
 py-lint:
+	ruff check --select I --fix
 	ruff check
 
 py-static:
-	mypy
+	mypy cryptid
 
 py-ci:
-	make py-format py-lint py-static
+	make py-lint py-format py-static
 
 refresh-venv:
 	uv sync

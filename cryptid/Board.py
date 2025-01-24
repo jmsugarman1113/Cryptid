@@ -1,11 +1,12 @@
 from __future__ import annotations
 
-from BoardSections import BOARD_SECTION_OFFSETS, BOARD_SECTIONS
-from Tile import Tile, Structure
-from Hex import Hex, FixedLength
 from dataclasses import dataclass
 from typing import Annotated
-from SetupCard import SetupCard
+
+from cryptid.BoardSections import BOARD_SECTION_OFFSETS, BOARD_SECTIONS
+from cryptid.Hex import FixedLength, Hex
+from cryptid.SetupCard import SetupCard
+from cryptid.Tile import Structure, Tile
 
 
 @dataclass

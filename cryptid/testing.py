@@ -1,8 +1,7 @@
-from Cryptid.Hex import AxialCoordinateHex
-from Tile import Terrain
-from Cryptid.Clue import GREEN_CLUES
-from Cryptid.BoardSections import BOARD_SECTIONS
-
+from cryptid.BoardSections import BOARD_SECTIONS
+from cryptid.Clue import GREEN_CLUES
+from cryptid.Hex import AxialCoordinateHex
+from cryptid.Tile import Terrain
 
 if __name__ == "__main__":
     # A = AxialCoordinateHex(0, 0)

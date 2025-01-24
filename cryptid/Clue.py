@@ -1,12 +1,14 @@
 from __future__ import annotations
+
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Annotated, Final, TYPE_CHECKING, Any
-from Hex import FixedLength
-from Tile import Tile, Terrain, AnimalTerritory, Shape, Color
+from typing import TYPE_CHECKING, Annotated, Any, Final
+
+from cryptid.Hex import FixedLength
+from cryptid.Tile import AnimalTerritory, Color, Shape, Terrain, Tile
 
 if TYPE_CHECKING:
-    from Board import Board
+    from cryptid.Board import Board
 
 
 @dataclass(frozen=True)
@@ -57,7 +59,7 @@ class Clue(ABC):
 @dataclass(frozen=True)
 class OnOneOfTwoTerrainClue(Clue):
     """
-    Cryptid is in one of two habitats
+    cryptid is in one of two habitats
     """
 
     valid_terrains: Annotated[list[Terrain], FixedLength(2)]
@@ -92,7 +94,7 @@ class OnOneOfTwoTerrainClue(Clue):
 @dataclass(frozen=True)
 class WithinOneSpaceOfTerrainClue(Clue):
     """
-    Cryptid is either on or adjacent to a specific terrain
+    cryptid is either on or adjacent to a specific terrain
     """
 
     terrain: Terrain
@@ -121,7 +123,7 @@ class WithinOneSpaceOfTerrainClue(Clue):
 @dataclass(frozen=True)
 class WithinOneSpaceOfEitherAnimalTerritoryClue(Clue):
     """
-    Cryptid is either on or adjacent to any animal territory
+    cryptid is either on or adjacent to any animal territory
     """
 
     negated: bool = False
@@ -149,7 +151,7 @@ class WithinOneSpaceOfEitherAnimalTerritoryClue(Clue):
 @dataclass(frozen=True)
 class WithinTwoSpacesOfShapeClue(Clue):
     """
-    Cryptid is within 2 spaces of a specific type (shape) of structure
+    cryptid is within 2 spaces of a specific type (shape) of structure
     """
 
     shape: Shape
@@ -179,7 +181,7 @@ class WithinTwoSpacesOfShapeClue(Clue):
 @dataclass(frozen=True)
 class WithinTwoSpacesOfAnimalTerritoryClue(Clue):
     """
-    Cryptid is within 2 spaces a specific animal territory
+    cryptid is within 2 spaces a specific animal territory
     """
 
     animal_territory: AnimalTerritory
@@ -208,7 +210,7 @@ class WithinTwoSpacesOfAnimalTerritoryClue(Clue):
 @dataclass(frozen=True)
 class WithinThreeSpacesOfColorClue(Clue):
     """
-    Cryptid is within 3 spaces of a color of structure
+    cryptid is within 3 spaces of a color of structure
     """
 
     color: Color

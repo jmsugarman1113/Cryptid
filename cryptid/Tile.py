@@ -1,8 +1,10 @@
 from __future__ import annotations
-from enum import StrEnum, auto
+
 from dataclasses import dataclass, replace
-from typing import Optional, Any
-from Cryptid.Hex import Hex
+from enum import StrEnum, auto
+from typing import Any, Optional
+
+from cryptid.Hex import Hex
 
 
 class UpperStrEnum(StrEnum):
