@@ -2,7 +2,8 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, fields
-from typing import Annotated, Any, Optional
+from typing import Annotated, Any, Optional, Self
+from types import NotImplementedType
 
 
 @dataclass(frozen=True)
@@ -16,19 +17,19 @@ class Hex(ABC):
     r: int
 
     @abstractmethod
-    def distance(self, other: Hex) -> int:
+    def distance(self, other: Self) -> int:
         pass
 
     @property
     @abstractmethod
-    def neighbor_directions(self) -> Annotated[list[Hex], FixedLength(6)]:
+    def neighbor_directions(self) -> Annotated[list[Self], FixedLength(6)]:
         pass
 
     @property
-    def neighbors(self) -> Annotated[list[Hex], FixedLength(6)]:
+    def neighbors(self) -> Annotated[list[Self], FixedLength(6)]:
         return [self + dir for dir in self.neighbor_directions]
 
-    def hexes_within_range(self, n: int) -> list[Hex]:
+    def hexes_within_range(self, n: int) -> list[Self]:
         output = list()
         center = self.to_axial_coordinate_hex()
         for q in range(-n, n + 1):
@@ -41,21 +42,21 @@ class Hex(ABC):
         return AxialCoordinateHex(self.q, self.r)
 
     @classmethod
-    def from_axial_coordinate_hex(cls, axial_hex: AxialCoordinateHex) -> Hex:
+    def from_axial_coordinate_hex(cls, axial_hex: AxialCoordinateHex) -> Self:
         return cls(axial_hex.q, axial_hex.r)
 
     def to_cube_coordinate_hex(self) -> CubeCoordinateHex:
         return self.to_axial_coordinate_hex().to_cube_coordinate_hex()
 
     @classmethod
-    def from_cube_coordinate_hex(cls, cube_hex: CubeCoordinateHex) -> Hex:
+    def from_cube_coordinate_hex(cls, cube_hex: CubeCoordinateHex) -> Self:
         return cls.from_axial_coordinate_hex(cube_hex.to_axial_coordinate_hex())
 
     @classmethod
-    def origin(cls) -> Hex:
+    def origin(cls) -> Self:
         return cls(**{field.name: 0 for field in fields(cls)})
 
-    def reflect_over_hex(self, other: Optional[Hex] = None) -> Hex:
+    def reflect_over_hex(self, other: Optional[Hex] = None) -> Self:
         if other is None:
             other = self.origin()
         elif not isinstance(other, self.__class__):
@@ -67,39 +68,39 @@ class Hex(ABC):
         return self.q, self.r
 
     @classmethod
-    def from_2d_coordinates(cls, q: int, r: int) -> Hex:
+    def from_2d_coordinates(cls, q: int, r: int) -> Self:
         return cls(q=q, r=r)
 
-    def __copy__(self) -> Hex:
+    def __copy__(self) -> Self:
         return self.__class__(**{field.name: getattr(self, field.name) for field in fields(self)})
 
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: Any) -> bool | NotImplementedType:
         if not isinstance(other, self.__class__):
-            raise NotImplementedError(f"equality is only defined between the same type of Hexes.  Trying to compare {self.__class__} and {other.__class__} ")  # fmt: skip
+            return NotImplemented#(f"equality is only defined between the same type of Hexes.  Trying to compare {self.__class__} and {other.__class__} ")  # fmt: skip
         return self.distance(other) == 0
 
     def __ne__(self, other: Any) -> bool:
         return not (self.__eq__(other))
 
-    def __add__(self, other: Any) -> Hex | NotImplemented:
+    def __add__(self, other: Any) -> Self | NotImplementedType:
         if isinstance(other, Hex):
             return self.from_axial_coordinate_hex(self.to_axial_coordinate_hex() + other.to_axial_coordinate_hex())
         return NotImplemented
 
-    def __sub__(self, other: Any) -> Hex | NotImplemented:
+    def __sub__(self, other: Any) -> Self | NotImplementedType:
         if isinstance(other, Hex):
             return self.from_axial_coordinate_hex(self.to_axial_coordinate_hex() - other.to_axial_coordinate_hex())
         return NotImplemented
 
-    def __mul__(self, other: Any) -> Hex | NotImplemented:
+    def __mul__(self, other: Any) -> Self | NotImplementedType:
         if isinstance(other, int):
             return self.from_axial_coordinate_hex(other * self.to_axial_coordinate_hex())
         return NotImplemented
 
-    def __rmul__(self, other: Any) -> Hex | NotImplemented:
+    def __rmul__(self, other: Any) -> Self | NotImplementedType:
         return self.__mul__(other)
 
-    def __neg__(self) -> Hex | NotImplemented:
+    def __neg__(self) -> Self | NotImplementedType:
         return -1 * self
 
     def __str__(self) -> str:
@@ -109,39 +110,39 @@ class Hex(ABC):
 
 @dataclass(frozen=True)
 class VectorHex(Hex, ABC):
-    def __add__(self, other: Any) -> Hex | NotImplemented:
+    def __add__(self, other: Any) -> Self | NotImplementedType:
         if isinstance(other, self.__class__):
             return self.__class__(
                 **{field.name: getattr(self, field.name) + getattr(other, field.name) for field in fields(self)}
             )
         elif isinstance(other, Hex):
             return super().__add__(other)
-        return NotImplemented(f"Can only add Hexes together.  Trying to add {type(self)} to {type(other)}")
+        return NotImplemented#(f"Can only add Hexes together.  Trying to add {type(self)} to {type(other)}")
 
-    def __sub__(self, other: Any) -> Hex | NotImplemented:
+    def __sub__(self, other: Any) -> Self | NotImplementedType:
         if isinstance(other, self.__class__):
             return self.__class__(
                 **{field.name: getattr(self, field.name) - getattr(other, field.name) for field in fields(self)}
             )
         elif isinstance(other, Hex):
             return super().__sub__(other)
-        return NotImplemented(f"Can only subtract Hexes from each other.  Trying to subtract {type(other)} from {type(self)}")  # fmt: skip
+        return NotImplemented#(f"Can only subtract Hexes from each other.  Trying to subtract {type(other)} from {type(self)}")  # fmt: skip
 
-    def __mul__(self, other: Any) -> Hex | NotImplemented:
+    def __mul__(self, other: Any) -> Self | NotImplementedType:
         if isinstance(other, int):
             return self.__class__(**{field.name: other * getattr(self, field.name) for field in fields(self)})
-        return NotImplemented(f"Can only scale Hex's by integers, got {type(other)} instead")
+        return NotImplemented#(f"Can only scale Hex's by integers, got {type(other)} instead")
 
-    # def __radd__(self, other: Any) -> Hex | NotImplemented:
+    # def __radd__(self, other: Any) -> Hex | NotImplementedType:
     #     return self.__add__(other)
     #
-    # def __rsub__(self, other: Any) -> Hex | NotImplemented:
+    # def __rsub__(self, other: Any) -> Hex | NotImplementedType:
     #     return self.__sub__(other)
 
-    def __rmul__(self, other: Any) -> Hex | NotImplemented:
+    def __rmul__(self, other: Any) -> Self | NotImplementedType:
         return self.__mul__(other)
 
-    def __neg__(self) -> Hex:
+    def __neg__(self) -> Self | NotImplementedType:
         return -1 * self
 
 
@@ -156,7 +157,7 @@ class OffsetCoordinateHex(Hex, ABC):
         return self.q
 
     @classmethod
-    def from_row_col(cls, row: int, col: int) -> OffsetCoordinateHex:
+    def from_row_col(cls, row: int, col: int) -> Self:
         return cls(q=col, r=row)
 
     def distance(self, other: Hex) -> int:
@@ -169,7 +170,7 @@ class OffsetCoordinateHex(Hex, ABC):
 class DoubleCoordinateHex(OffsetCoordinateHex, VectorHex, ABC):
     # q is col
     # r is row
-    def ___post_init__(self):
+    def ___post_init__(self) -> None:
         assert (self.q + self.r) % 2 == 0, "A doubled coordinate hex must have its coordinates be of the same parity"  # fmt: skip
 
 
@@ -343,19 +344,19 @@ class AxialCoordinateHex(VectorHex):
 class CubeCoordinateHex(AxialCoordinateHex):
     s: int
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         assert (intercept := (self.q + self.r + self.s)) == 0, f"A Cube Hex must lie in a plane through the origin (q + r + s = 0), got {intercept} instead"  # fmt: skip
 
-    @property
-    def neighbor_directions(self) -> Annotated[list[CubeCoordinateHex], FixedLength(6)]:
-        return [
-            CubeCoordinateHex(q=1, r=0, s=-1),
-            CubeCoordinateHex(q=1, r=-1, s=0),
-            CubeCoordinateHex(q=0, r=-1, s=1),
-            CubeCoordinateHex(q=-1, r=0, s=1),
-            CubeCoordinateHex(q=-1, r=1, s=0),
-            CubeCoordinateHex(q=0, r=1, s=-1),
-        ]
+    # @property
+    # def neighbor_directions(self) -> Annotated[list[CubeCoordinateHex], FixedLength(6)]:
+    #     return [
+    #         CubeCoordinateHex(q=1, r=0, s=-1),
+    #         CubeCoordinateHex(q=1, r=-1, s=0),
+    #         CubeCoordinateHex(q=0, r=-1, s=1),
+    #         CubeCoordinateHex(q=-1, r=0, s=1),
+    #         CubeCoordinateHex(q=-1, r=1, s=0),
+    #         CubeCoordinateHex(q=0, r=1, s=-1),
+    #     ]
 
     def to_axial_coordinate_hex(self) -> AxialCoordinateHex:
         return AxialCoordinateHex(self.q, self.r)
