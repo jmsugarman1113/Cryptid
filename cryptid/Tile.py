@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass, replace
 from enum import StrEnum, auto
-from typing import Any, Optional
 from types import NotImplementedType
+from typing import Any, Optional
 
 from cryptid.Hex import Hex
 

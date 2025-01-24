@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, fields
-from typing import Annotated, Any, Optional, Self
 from types import NotImplementedType
+from typing import Annotated, Any, Optional, Self
 
 
 @dataclass(frozen=True)
@@ -76,7 +76,7 @@ class Hex(ABC):
 
     def __eq__(self, other: Any) -> bool | NotImplementedType:
         if not isinstance(other, self.__class__):
-            return NotImplemented#(f"equality is only defined between the same type of Hexes.  Trying to compare {self.__class__} and {other.__class__} ")  # fmt: skip
+            return NotImplemented  # (f"equality is only defined between the same type of Hexes.  Trying to compare {self.__class__} and {other.__class__} ")  # fmt: skip
         return self.distance(other) == 0
 
     def __ne__(self, other: Any) -> bool:
@@ -117,7 +117,7 @@ class VectorHex(Hex, ABC):
             )
         elif isinstance(other, Hex):
             return super().__add__(other)
-        return NotImplemented#(f"Can only add Hexes together.  Trying to add {type(self)} to {type(other)}")
+        return NotImplemented  # (f"Can only add Hexes together.  Trying to add {type(self)} to {type(other)}")
 
     def __sub__(self, other: Any) -> Self | NotImplementedType:
         if isinstance(other, self.__class__):
@@ -126,12 +126,12 @@ class VectorHex(Hex, ABC):
             )
         elif isinstance(other, Hex):
             return super().__sub__(other)
-        return NotImplemented#(f"Can only subtract Hexes from each other.  Trying to subtract {type(other)} from {type(self)}")  # fmt: skip
+        return NotImplemented  # (f"Can only subtract Hexes from each other.  Trying to subtract {type(other)} from {type(self)}")  # fmt: skip
 
     def __mul__(self, other: Any) -> Self | NotImplementedType:
         if isinstance(other, int):
             return self.__class__(**{field.name: other * getattr(self, field.name) for field in fields(self)})
-        return NotImplemented#(f"Can only scale Hex's by integers, got {type(other)} instead")
+        return NotImplemented  # (f"Can only scale Hex's by integers, got {type(other)} instead")
 
     # def __radd__(self, other: Any) -> Hex | NotImplementedType:
     #     return self.__add__(other)
