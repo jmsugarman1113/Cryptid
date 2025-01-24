@@ -1,8 +1,8 @@
 from __future__ import annotations
 from dataclasses import dataclass
-from Hex import FixedLength, Hex
+from Cryptid.Hex import FixedLength, Hex
 from typing import Annotated
-from Clue import Clue
+from Cryptid.Clue import Clue
 from Tile import Structure
 
 

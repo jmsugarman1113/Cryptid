@@ -2,7 +2,7 @@ from __future__ import annotations
 from enum import StrEnum, auto
 from dataclasses import dataclass, replace
 from typing import Optional, Any
-from Hex import Hex
+from Cryptid.Hex import Hex
 
 
 class UpperStrEnum(StrEnum):
