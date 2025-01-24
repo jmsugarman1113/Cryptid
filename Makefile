@@ -13,3 +13,6 @@ py-ci:
 
 refresh-venv:
 	uv sync
+	git restore --staged .
+	git add pyproject.toml
+	git add uv.lock
