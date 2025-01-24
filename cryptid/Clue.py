@@ -65,7 +65,7 @@ class OnOneOfTwoTerrainClue(Clue):
     valid_terrains: Annotated[list[Terrain], FixedLength(2)]
     negated: bool = False
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if (num_terrains := len(self.valid_terrains)) != 2:
             raise ValueError(f"must pass 2 valid terrains, got {num_terrains} instead")
         if self.valid_terrains[0] == self.valid_terrains[1]:

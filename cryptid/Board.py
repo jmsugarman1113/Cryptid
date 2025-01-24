@@ -15,9 +15,9 @@ class Board:
 
     @classmethod
     def from_board_sections(cls, order: Annotated[list[int], FixedLength(6)]) -> Board:
-        tiles = dict()
+        tiles: dict[Hex, Tile] = dict()
         for offset, board_section in enumerate(order):
-            tiles |= BOARD_SECTIONS[board_section - 1].offset(BOARD_SECTION_OFFSETS[offset])
+            tiles |= BOARD_SECTIONS[board_section - 1].offset(BOARD_SECTION_OFFSETS[offset]).tiles
         return cls(tiles=tiles)
 
     def place_structure(self, structure: Structure, location: Hex) -> None:

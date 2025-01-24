@@ -1,3 +1,5 @@
+# mypy: ignore-errors
+
 from cryptid.BoardSections import BOARD_SECTIONS
 from cryptid.Clue import GREEN_CLUES
 from cryptid.Hex import AxialCoordinateHex

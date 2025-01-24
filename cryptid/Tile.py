@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass, replace
 from enum import StrEnum, auto
 from typing import Any, Optional
+from types import NotImplementedType
 
 from cryptid.Hex import Hex
 
@@ -62,24 +63,24 @@ class Tile:
     animal_territory: Optional[AnimalTerritory] = None
     structure: Optional[Structure] = None
 
-    def __add__(self, other: Any) -> Tile | NotImplemented:
+    def __add__(self, other: Any) -> Tile | NotImplementedType:
         if isinstance(other, self.__class__):
             return replace(self, hex=self.hex + other.hex)
         if isinstance(other, self.hex.__class__):
             return replace(self, hex=self.hex + other)
         return NotImplemented
 
-    def __radd__(self, other: Any) -> Tile | NotImplemented:
+    def __radd__(self, other: Any) -> Tile | NotImplementedType:
         return self.__add__(other)
 
-    def __sub__(self, other: Any) -> Tile | NotImplemented:
+    def __sub__(self, other: Any) -> Tile | NotImplementedType:
         if isinstance(other, self.__class__):
             return replace(self, hex=self.hex - other.hex)
         if isinstance(other, self.hex.__class__):
             return replace(self, hex=self.hex - other)
         return NotImplemented
 
-    def __rsub__(self, other: Any) -> Tile | NotImplemented:
+    def __rsub__(self, other: Any) -> Tile | NotImplementedType:
         return self.__sub__(other)
 
     # def __str__(self) -> str:

@@ -12,7 +12,7 @@ class BoardSection:
     tiles: Annotated[dict[Hex, Tile], FixedLength(18)]
 
     def offset(self, offset_hex: Hex) -> BoardSection:
-        new_tiles = dict()
+        new_tiles: dict[Hex, Tile] = dict()
         for k, tile in self.tiles.items():
             new_tile: Tile = tile + offset_hex
             new_tiles[new_tile.hex] = new_tile
