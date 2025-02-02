@@ -245,14 +245,14 @@ class AxialCoordinateHex(VectorHex):
         return -self.q - self.r
 
     @property
-    def neighbor_directions(self) -> Annotated[list[AxialCoordinateHex], FixedLength(6)]:
+    def neighbor_directions(self) -> Annotated[list[Self], FixedLength(6)]:
         return [
-            AxialCoordinateHex(q=1, r=0),
-            AxialCoordinateHex(q=1, r=-1),
-            AxialCoordinateHex(q=0, r=-1),
-            AxialCoordinateHex(q=-1, r=0),
-            AxialCoordinateHex(q=-1, r=1),
-            AxialCoordinateHex(q=0, r=1),
+            self.from_axial_coordinate_hex(AxialCoordinateHex(q=1, r=0)),
+            self.from_axial_coordinate_hex(AxialCoordinateHex(q=1, r=-1)),
+            self.from_axial_coordinate_hex(AxialCoordinateHex(q=0, r=-1)),
+            self.from_axial_coordinate_hex(AxialCoordinateHex(q=-1, r=0)),
+            self.from_axial_coordinate_hex(AxialCoordinateHex(q=-1, r=1)),
+            self.from_axial_coordinate_hex(AxialCoordinateHex(q=0, r=1)),
         ]
 
     def distance(self, other: AxialCoordinateHex) -> int:
