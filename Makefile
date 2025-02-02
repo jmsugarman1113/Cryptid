@@ -1,3 +1,6 @@
+activate-venv:
+	source .venv/bin/activate
+
 py-format:
 	ruff format
 
