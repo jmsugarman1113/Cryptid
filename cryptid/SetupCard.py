@@ -12,4 +12,13 @@ from cryptid.Tile import Structure
 class SetupCard:
     board_sections: Annotated[list[int], FixedLength(6)]
     structures: list[tuple[Hex, Structure]]
-    clues: Annotated[dict[int, list[Clue]], FixedLength(3)]  # keys are guaranteed to be 3, 4, 5 for num players
+    clues_3_player: tuple[Clue, Clue, Clue]
+    clues_4_player: tuple[Clue, Clue, Clue, Clue]
+    clues_5_player: tuple[Clue, Clue, Clue, Clue, Clue]
+
+    def __post_init__(self) -> None:
+        self.clues: dict[int, tuple[Clue, ...]] = {
+            3: self.clues_3_player,
+            4: self.clues_4_player,
+            5: self.clues_5_player,
+        }
