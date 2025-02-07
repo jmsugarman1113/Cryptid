@@ -5,14 +5,16 @@ py-format:
 	ruff format
 
 py-lint:
-	ruff check --select I --fix
-	ruff check
+	ruff check --fix
 
 py-static:
 	mypy cryptid
 
+py-test:
+	pytest tests/
+
 py-ci:
-	make py-lint py-format py-static
+	make py-lint py-format py-static py-test
 
 refresh-venv:
 	uv sync

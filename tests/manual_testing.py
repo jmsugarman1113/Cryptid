@@ -2,10 +2,12 @@
 
 from cryptid.BoardSections import BOARD_SECTIONS
 from cryptid.Clue import GREEN_CLUES
-from cryptid.Hex import AxialCoordinateHex
+from cryptid.Hex import AxialCoordinateHex, DoubledHeightCoordinateHex
 from cryptid.Tile import Terrain
 
 if __name__ == "__main__":
+    h = DoubledHeightCoordinateHex(0, 1)
+
     # A = AxialCoordinateHex(0, 0)
     #
     # print(A.neighbors)

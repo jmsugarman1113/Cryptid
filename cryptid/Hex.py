@@ -158,9 +158,9 @@ class OffsetCoordinateHex(Hex, ABC):
 
     @classmethod
     def from_row_col(cls, row: int, col: int) -> Self:
-        return cls(q=col, r=row)
+        return cls(col, row)
 
-    def distance(self, other: Hex) -> int:
+    def distance(self, other: Self) -> int:
         if not isinstance(other, self.__class__):
             raise NotImplementedError(f"distance is only defined between the same type of Hexes.  Trying to compare {self.__class__} to {other.__class__}")  # fmt: skip
         return self.to_axial_coordinate_hex().distance(other.to_axial_coordinate_hex())
@@ -170,12 +170,16 @@ class OffsetCoordinateHex(Hex, ABC):
 class DoubleCoordinateHex(OffsetCoordinateHex, VectorHex, ABC):
     # q is col
     # r is row
-    def ___post_init__(self) -> None:
+    def __post_init__(self) -> None:
+        print("in Double Coord hex post init")
         assert (self.q + self.r) % 2 == 0, "A doubled coordinate hex must have its coordinates be of the same parity"  # fmt: skip
 
 
 @dataclass(frozen=True)
 class DoubledHeightCoordinateHex(DoubleCoordinateHex):
+    def __post_init__(self) -> None:
+        super().__post_init__()
+
     @property
     def neighbor_directions(self) -> Annotated[list[DoubledHeightCoordinateHex], FixedLength(6)]:
         return [
@@ -187,10 +191,10 @@ class DoubledHeightCoordinateHex(DoubleCoordinateHex):
             DoubledHeightCoordinateHex(q=0, r=2),
         ]
 
-    # def distance(self, other: DoubledHeightCoordinateHex) -> int:
-    #     drow = abs(self.row - other.row)
-    #     dcol = abs(self.col - other.col)
-    #     return dcol + max(0, (drow-dcol)//2)
+    def distance(self, other: DoubledHeightCoordinateHex) -> int:
+        drow = abs(self.row - other.row)
+        dcol = abs(self.col - other.col)
+        return dcol + max(0, (drow - dcol) // 2)
 
     def to_axial_coordinate_hex(self) -> AxialCoordinateHex:
         return AxialCoordinateHex(self.q, (self.r - self.q) // 2)
@@ -208,6 +212,9 @@ class DoubledHeightCoordinateHex(DoubleCoordinateHex):
 
 @dataclass(frozen=True)
 class DoubledWidthCoordinateHex(DoubleCoordinateHex):
+    def __post_init__(self) -> None:
+        super().__post_init__()
+
     @property
     def neighbor_directions(self) -> list[DoubledWidthCoordinateHex]:
         return [
@@ -219,10 +226,10 @@ class DoubledWidthCoordinateHex(DoubleCoordinateHex):
             DoubledWidthCoordinateHex(q=1, r=1),
         ]
 
-    # def distance(self, other: DoubledWidthCoordinateHex) -> int:
-    #     dcol = abs(self.col - other.col)
-    #     drow = abs(self.row - other.row)
-    #     return drow + max(0, (dcol - drow) // 2)
+    def distance(self, other: DoubledWidthCoordinateHex) -> int:
+        dcol = abs(self.col - other.col)
+        drow = abs(self.row - other.row)
+        return drow + max(0, (dcol - drow) // 2)
 
     def to_axial_coordinate_hex(self) -> AxialCoordinateHex:
         return AxialCoordinateHex((self.r - self.q) // 2, self.q)
