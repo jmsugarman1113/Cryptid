@@ -171,7 +171,7 @@ class DoubleCoordinateHex(OffsetCoordinateHex, VectorHex, ABC):
     # q is col
     # r is row
     def __post_init__(self) -> None:
-        print("in Double Coord hex post init")
+        # print("in Double Coord hex post init")
         assert (self.q + self.r) % 2 == 0, "A doubled coordinate hex must have its coordinates be of the same parity"  # fmt: skip
 
 
