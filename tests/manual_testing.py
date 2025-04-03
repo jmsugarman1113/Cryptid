@@ -6,7 +6,10 @@ from cryptid.Hex import AxialCoordinateHex, DoubledHeightCoordinateHex
 from cryptid.Tile import Terrain
 
 if __name__ == "__main__":
-    h = DoubledHeightCoordinateHex(0, 1)
+    h = DoubledHeightCoordinateHex(0, 2)
+    h = DoubledHeightCoordinateHex(3, 3)
+    print(h.to_axial_coordinate_hex())
+    print(h.reflect_over_hex())
 
     # A = AxialCoordinateHex(0, 0)
     #

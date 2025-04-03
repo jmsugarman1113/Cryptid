@@ -27,7 +27,7 @@ class Hex(ABC):
 
     @property
     def neighbors(self) -> Annotated[list[Self], FixedLength(6)]:
-        return [self + dir for dir in self.neighbor_directions]
+        return [self + direction for direction in self.neighbor_directions]
 
     def hexes_within_range(self, n: int) -> list[Self]:
         output = list()
@@ -56,7 +56,7 @@ class Hex(ABC):
     def origin(cls) -> Self:
         return cls(**{field.name: 0 for field in fields(cls)})
 
-    def reflect_over_hex(self, other: Optional[Hex] = None) -> Self:
+    def reflect_over_hex(self, other: Optional[Self] = None) -> Self:
         if other is None:
             other = self.origin()
         elif not isinstance(other, self.__class__):

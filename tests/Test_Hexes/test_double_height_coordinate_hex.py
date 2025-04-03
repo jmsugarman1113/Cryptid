@@ -1,6 +1,22 @@
+import random
+
 import pytest
 
 from cryptid.Hex import AxialCoordinateHex, CubeCoordinateHex, DoubledHeightCoordinateHex
+
+
+def get_random_DoubleHeightCoordinateHex(
+    radius: int,
+    random_seed: int,
+    row_offset: int = 0,
+    column_offset: int = 0,
+) -> DoubledHeightCoordinateHex:
+    random.seed(random_seed)
+    row = random.randint(-radius, radius) + row_offset
+    col = random.randint(-radius, radius) // 2 + column_offset
+    if (row + col) % 2 != 0:
+        row += 1
+    return DoubledHeightCoordinateHex.from_row_col(row, col)
 
 
 class TestDoubledHeightCoordinateHex:
@@ -17,6 +33,16 @@ class TestDoubledHeightCoordinateHex:
 
         with pytest.raises(AssertionError):
             h6 = DoubledHeightCoordinateHex(-1, -2)
+
+    def test_equality(self):
+        assert DoubledHeightCoordinateHex(0, 0) == DoubledHeightCoordinateHex.origin()
+        assert DoubledHeightCoordinateHex(3, -1) == DoubledHeightCoordinateHex(3, -1)
+
+        for value in [0, -1.5, False, "test"]:
+            with pytest.raises(AssertionError):
+                assert DoubledHeightCoordinateHex(1, 1) == value
+            with pytest.raises(AssertionError):
+                assert value == DoubledHeightCoordinateHex(1, 1)
 
     def test_hash(self):
         assert hash(DoubledHeightCoordinateHex(0, 0)) == hash(DoubledHeightCoordinateHex.origin())
@@ -93,6 +119,8 @@ class TestDoubledHeightCoordinateHex:
     def test_neg(self):
         assert -DoubledHeightCoordinateHex(-1, 3) == DoubledHeightCoordinateHex(1, -3)
         assert -DoubledHeightCoordinateHex.origin() == DoubledHeightCoordinateHex.origin()
+        h = DoubledHeightCoordinateHex(2, -2)
+        assert -(-h) == h
 
     def test_neighbors(self):
         origin_neighbors = self.origin.neighbors
@@ -108,3 +136,25 @@ class TestDoubledHeightCoordinateHex:
             DoubledHeightCoordinateHex(-3, -3),
             DoubledHeightCoordinateHex(-2, -2),
         ]
+
+    def test_reflection(self):
+        assert DoubledHeightCoordinateHex(4, 8).reflect_over_hex(
+            DoubledHeightCoordinateHex(3, 5)
+        ) == DoubledHeightCoordinateHex(2, 2)
+        assert DoubledHeightCoordinateHex(3, 3).reflect_over_hex() == DoubledHeightCoordinateHex(-3, -3)
+        h = DoubledHeightCoordinateHex(1, 3)
+        assert h.reflect_over_hex() == -h
+
+    def test_distance(self):
+        h = get_random_DoubleHeightCoordinateHex(radius=20, random_seed=13)
+        assert all(h.distance(other) == 1 for other in h.neighbors)
+        assert h.distance(h) == 0
+        assert DoubledHeightCoordinateHex(2, 0).distance(DoubledHeightCoordinateHex(3, 5)) == 3
+
+    def test_range(self):
+        center = get_random_DoubleHeightCoordinateHex(radius=20, random_seed=11)
+        for radius in range(1, 5):
+            hexes_in_ranges = center.hexes_within_range(radius)
+            assert all(0 <= center.distance(other) <= radius for other in hexes_in_ranges)
+            centered_hex_number = 3 * radius * (radius + 1) + 1
+            assert len(set(hexes_in_ranges)) == centered_hex_number
