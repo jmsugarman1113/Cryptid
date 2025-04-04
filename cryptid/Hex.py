@@ -232,7 +232,7 @@ class DoubledWidthCoordinateHex(DoubleCoordinateHex):
         return drow + max(0, (dcol - drow) // 2)
 
     def to_axial_coordinate_hex(self) -> AxialCoordinateHex:
-        return AxialCoordinateHex((self.r - self.q) // 2, self.q)
+        return AxialCoordinateHex((self.col - self.row) // 2, self.row)
 
     @classmethod
     def from_axial_coordinate_hex(cls, axial_hex: AxialCoordinateHex) -> DoubledWidthCoordinateHex:
@@ -295,7 +295,7 @@ class AxialCoordinateHex(VectorHex):
         return even_row_offset_hex.to_axial_coordinate_hex()
 
     def to_odd_row_offset_coordinate_hex(self) -> OddRowOffsetCoordinateHex:
-        return OddRowOffsetCoordinateHex.from_row_col(row=self.r, col=self.q + (self.r - self.r & 1) // 2)
+        return OddRowOffsetCoordinateHex.from_row_col(row=self.r, col=self.q + (self.r - (self.r & 1)) // 2)
 
     @classmethod
     def from_odd_row_offset_coordinate_hex(cls, odd_row_offset_hex: OddRowOffsetCoordinateHex) -> AxialCoordinateHex:
