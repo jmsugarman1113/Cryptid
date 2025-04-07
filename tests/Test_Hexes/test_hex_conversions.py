@@ -13,31 +13,17 @@ from cryptid.Hex import (
 
 
 class TestHexConversions:
-    def test_origins_all_equal(self):
-        axial_origin = AxialCoordinateHex.origin()
-        for hex_type in [
-            CubeCoordinateHex,
-            DoubledHeightCoordinateHex,
-            DoubledWidthCoordinateHex,
-            EvenRowOffsetCoordinateHex,
-            OddRowOffsetCoordinateHex,
-            EvenColumnOffsetCoordinateHex,
-            OddColumnOffsetCoordinateHex,
-        ]:
-            other_origin = hex_type.from_axial_coordinate_hex(axial_origin)
-            assert other_origin == hex_type.origin()
-            assert all(getattr(other_origin, f.name) == 0 for f in fields(other_origin))
-
-    def test_conversions_1(self):
-        axial = AxialCoordinateHex(1, 2)
-        cube = CubeCoordinateHex(1, 2, -3)
-        double_height = DoubledHeightCoordinateHex(1, 5)
-        double_width = DoubledWidthCoordinateHex(4, 2)
-        odd_row = OddRowOffsetCoordinateHex(2, 2)
-        even_row = EvenRowOffsetCoordinateHex(2, 2)
-        odd_column = OddColumnOffsetCoordinateHex(1, 2)
-        even_column = EvenColumnOffsetCoordinateHex(1, 3)
-
+    @staticmethod
+    def conversion_helper(
+        axial: AxialCoordinateHex,
+        cube: CubeCoordinateHex,
+        double_height: DoubledHeightCoordinateHex,
+        double_width: DoubledWidthCoordinateHex,
+        odd_row: OddRowOffsetCoordinateHex,
+        even_row: EvenRowOffsetCoordinateHex,
+        odd_column: OddColumnOffsetCoordinateHex,
+        even_column: EvenColumnOffsetCoordinateHex,
+    ) -> None:
         assert axial.to_axial_coordinate_hex() == axial
         assert AxialCoordinateHex.from_axial_coordinate_hex(axial) == axial
 
@@ -75,3 +61,54 @@ class TestHexConversions:
         assert AxialCoordinateHex.from_even_column_offset_coordinate_hex(even_column) == axial
         assert even_column.to_axial_coordinate_hex() == axial
         assert EvenColumnOffsetCoordinateHex.from_axial_coordinate_hex(axial) == even_column
+
+    def test_origins_all_equal(self):
+        axial_origin = AxialCoordinateHex.origin()
+        other_hex_types = [
+            CubeCoordinateHex,
+            DoubledHeightCoordinateHex,
+            DoubledWidthCoordinateHex,
+            OddRowOffsetCoordinateHex,
+            EvenRowOffsetCoordinateHex,
+            OddColumnOffsetCoordinateHex,
+            EvenColumnOffsetCoordinateHex,
+        ]
+        for hex_type in other_hex_types:
+            other_origin = hex_type.from_axial_coordinate_hex(axial_origin)
+            assert other_origin == hex_type.origin()
+            assert all(getattr(other_origin, f.name) == 0 for f in fields(other_origin))
+
+        self.conversion_helper(axial_origin, *[hex_type.origin() for hex_type in other_hex_types])
+
+    def test_conversions_1(self):
+        axial = AxialCoordinateHex(1, 2)
+        cube = CubeCoordinateHex(1, 2, -3)
+        double_height = DoubledHeightCoordinateHex(1, 5)
+        double_width = DoubledWidthCoordinateHex(4, 2)
+        odd_row = OddRowOffsetCoordinateHex(2, 2)
+        even_row = EvenRowOffsetCoordinateHex(2, 2)
+        odd_column = OddColumnOffsetCoordinateHex(1, 2)
+        even_column = EvenColumnOffsetCoordinateHex(1, 3)
+
+        self.conversion_helper(
+            axial=axial,
+            cube=cube,
+            double_height=double_height,
+            double_width=double_width,
+            odd_row=odd_row,
+            even_row=even_row,
+            odd_column=odd_column,
+            even_column=even_column,
+        )
+
+    def test_conversions_2(self):
+        self.conversion_helper(
+            axial=AxialCoordinateHex(5, -1),
+            cube=CubeCoordinateHex(5, -1, -4),
+            double_height=DoubledHeightCoordinateHex(5, 3),
+            double_width=DoubledWidthCoordinateHex(9, -1),
+            odd_column=OddColumnOffsetCoordinateHex(5, 1),
+            odd_row=OddRowOffsetCoordinateHex(4, -1),
+            even_column=EvenColumnOffsetCoordinateHex(5, 2),
+            even_row=EvenRowOffsetCoordinateHex(5, -1),
+        )
