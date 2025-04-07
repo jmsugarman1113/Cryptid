@@ -1,3 +1,4 @@
+import copy
 import random
 
 import pytest
@@ -44,8 +45,23 @@ class TestDoubledHeightCoordinateHex:
             with pytest.raises(AssertionError):
                 assert value == DoubledHeightCoordinateHex(1, 1)
 
+    def test_not_equal(self):
+        assert DoubledHeightCoordinateHex(3, 1) != DoubledHeightCoordinateHex(3, 3)
+        assert DoubledHeightCoordinateHex(3, 1) != DoubledHeightCoordinateHex(1, 3)
+        assert DoubledHeightCoordinateHex(3, 1) != DoubledHeightCoordinateHex(1, 1)
+
     def test_hash(self):
         assert hash(DoubledHeightCoordinateHex(0, 0)) == hash(DoubledHeightCoordinateHex.origin())
+        assert hash(get_random_DoubleHeightCoordinateHex(10, 42)) != hash(get_random_DoubleHeightCoordinateHex(10, 43))
+
+        my_dict = dict()
+        my_dict[DoubledHeightCoordinateHex(0, 0)] = "origin"
+        my_dict[DoubledHeightCoordinateHex(-1, 1)] = "test_1"
+        my_dict[get_random_DoubleHeightCoordinateHex(20, 20)] = "test_2"
+
+        assert my_dict[DoubledHeightCoordinateHex.origin()] == "origin"
+        assert my_dict[DoubledHeightCoordinateHex(-1, 1)] == "test_1"
+        assert my_dict[get_random_DoubleHeightCoordinateHex(20, 20)] == "test_2"
 
     def test_axial_conversion(self):
         assert DoubledHeightCoordinateHex.origin().to_axial_coordinate_hex() == AxialCoordinateHex.origin()
@@ -121,6 +137,30 @@ class TestDoubledHeightCoordinateHex:
         assert -DoubledHeightCoordinateHex.origin() == DoubledHeightCoordinateHex.origin()
         h = DoubledHeightCoordinateHex(2, -2)
         assert -(-h) == h
+
+    def test_copy(self):
+        o = DoubledHeightCoordinateHex.origin()
+        o2 = copy.copy(o)
+        assert o == o2
+        assert id(o) != id(o2)
+        assert o2.q == 0 and o2.r == 0
+
+        h = get_random_DoubleHeightCoordinateHex(20, 17)
+        h2 = copy.copy(h)
+        assert h == h2
+        assert id(h) != id(h2)
+
+    def test_deepcopy(self):
+        o = DoubledHeightCoordinateHex.origin()
+        o2 = copy.deepcopy(o)
+        assert o == o2
+        assert id(o) != id(o2)
+        assert o2.q == 0 and o2.r == 0
+
+        h = get_random_DoubleHeightCoordinateHex(20, 17)
+        h2 = copy.deepcopy(h)
+        assert h == h2
+        assert id(h) != id(h2)
 
     def test_neighbors(self):
         origin_neighbors = self.origin.neighbors

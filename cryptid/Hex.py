@@ -1,7 +1,7 @@
 from __future__ import annotations
 
+import copy
 from abc import ABC, abstractmethod
-from copy import deepcopy
 from dataclasses import dataclass, fields
 from types import NotImplementedType
 from typing import Annotated, Any, Optional, Self
@@ -76,7 +76,9 @@ class Hex(ABC):
         return self.__class__(**{field.name: getattr(self, field.name) for field in fields(self)})
 
     def __deepcopy__(self, memodict: dict = dict()) -> Self:
-        return self.__class__(**{field.name: deepcopy(getattr(self, field.name), memodict) for field in fields(self)})
+        return self.__class__(
+            **{field.name: copy.deepcopy(getattr(self, field.name), memodict) for field in fields(self)}
+        )
 
     def __eq__(self, other: Any) -> bool | NotImplementedType:
         if not isinstance(other, self.__class__):
