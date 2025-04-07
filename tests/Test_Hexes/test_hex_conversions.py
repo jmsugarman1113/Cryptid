@@ -38,6 +38,9 @@ class TestHexConversions:
         odd_column = OddColumnOffsetCoordinateHex(1, 2)
         even_column = EvenColumnOffsetCoordinateHex(1, 3)
 
+        assert axial.to_axial_coordinate_hex() == axial
+        assert AxialCoordinateHex.from_axial_coordinate_hex(axial) == axial
+
         assert axial.to_cube_coordinate_hex() == cube
         assert AxialCoordinateHex.from_cube_coordinate_hex(cube) == axial
         assert cube.to_axial_coordinate_hex() == axial

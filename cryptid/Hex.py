@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from copy import deepcopy
 from dataclasses import dataclass, fields
 from types import NotImplementedType
 from typing import Annotated, Any, Optional, Self
@@ -74,6 +75,9 @@ class Hex(ABC):
     def __copy__(self) -> Self:
         return self.__class__(**{field.name: getattr(self, field.name) for field in fields(self)})
 
+    def __deepcopy__(self, memodict: dict = dict()) -> Self:
+        return self.__class__(**{field.name: deepcopy(getattr(self, field.name), memodict) for field in fields(self)})
+
     def __eq__(self, other: Any) -> bool | NotImplementedType:
         if not isinstance(other, self.__class__):
             return NotImplemented  # (f"equality is only defined between the same type of Hexes.  Trying to compare {self.__class__} and {other.__class__} ")  # fmt: skip
@@ -106,6 +110,8 @@ class Hex(ABC):
     def __str__(self) -> str:
         field_str = ", ".join([f"{field.name}={getattr(self, field.name)}" for field in fields(self)])
         return f"{self.__class__.__name__}({field_str})"
+
+    # NOTE: specifically don't implement radd and rsub so its clear what type of Hex will come out of arithmetic operations
 
 
 @dataclass(frozen=True)
@@ -365,8 +371,8 @@ class CubeCoordinateHex(AxialCoordinateHex):
     #         CubeCoordinateHex(q=0, r=1, s=-1),
     #     ]
 
-    def to_axial_coordinate_hex(self) -> AxialCoordinateHex:
-        return AxialCoordinateHex(self.q, self.r)
+    # def to_axial_coordinate_hex(self) -> AxialCoordinateHex:
+    #     return AxialCoordinateHex(self.q, self.r)
 
     @classmethod
     def from_axial_coordinate_hex(cls, axial_hex: AxialCoordinateHex) -> CubeCoordinateHex:

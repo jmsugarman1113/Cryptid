@@ -11,7 +11,8 @@ py-static:
 	mypy cryptid
 
 py-test:
-	pytest tests/
+	coverage run -m pytest tests/
+	coverage report -m --skip-empty --omit="tests/*"
 
 py-ci:
 	make py-lint py-format py-static py-test
