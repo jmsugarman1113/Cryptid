@@ -63,6 +63,21 @@ class TestDoubledHeightCoordinateHex:
         assert my_dict[DoubledHeightCoordinateHex(-1, 1)] == "test_1"
         assert my_dict[get_random_DoubleHeightCoordinateHex(20, 20)] == "test_2"
 
+    def test_to_2d_coordinates(self):
+        assert DoubledHeightCoordinateHex.origin().to_2d_coordinates() == (0, 0)
+        assert DoubledHeightCoordinateHex(3, 5).to_2d_coordinates() == (3, 5)
+
+        random_hex = get_random_DoubleHeightCoordinateHex(radius=20, random_seed=1)
+        assert random_hex.to_2d_coordinates() == (random_hex.q, random_hex.r)
+
+    def test_from_2d_coordinates(self):
+        assert DoubledHeightCoordinateHex.from_2d_coordinates(0, 0) == DoubledHeightCoordinateHex.origin()
+        assert DoubledHeightCoordinateHex.from_2d_coordinates(-12, 8) == DoubledHeightCoordinateHex(-12, 8)
+
+        q = random.randint(-20, 21)
+        r = q + 2 * random.randint(-10, 11)
+        assert DoubledHeightCoordinateHex.from_2d_coordinates(q, r) == DoubledHeightCoordinateHex(q, r)
+
     def test_axial_conversion(self):
         assert DoubledHeightCoordinateHex.origin().to_axial_coordinate_hex() == AxialCoordinateHex.origin()
         assert (

@@ -81,9 +81,15 @@ class Hex(ABC):
         )
 
     def __eq__(self, other: Any) -> bool | NotImplementedType:
+        ## only compare same families of hexes, works because abstract hexes will never be instantiated
         if not isinstance(other, self.__class__):
             return NotImplemented  # (f"equality is only defined between the same type of Hexes.  Trying to compare {self.__class__} and {other.__class__} ")  # fmt: skip
         return self.distance(other) == 0
+
+        ## Only compare exact same types
+        # if not type(other) == self.__class__:
+        #     return NotImplemented
+        # return all(getattr(self, field.name) == getattr(other, field.name) for field in fields(self))
 
     def __ne__(self, other: Any) -> bool:
         return not (self.__eq__(other))
@@ -108,10 +114,6 @@ class Hex(ABC):
 
     def __neg__(self) -> Self | NotImplementedType:
         return -1 * self
-
-    def __str__(self) -> str:
-        field_str = ", ".join([f"{field.name}={getattr(self, field.name)}" for field in fields(self)])
-        return f"{self.__class__.__name__}({field_str})"
 
     # NOTE: specifically don't implement radd and rsub so its clear what type of Hex will come out of arithmetic operations
 
@@ -257,7 +259,7 @@ class DoubledWidthCoordinateHex(DoubleCoordinateHex):
 class AxialCoordinateHex(VectorHex):
     @property
     def _s(self) -> int:
-        return -self.q - self.r
+        return -(self.q + self.r)
 
     @property
     def neighbor_directions(self) -> Annotated[list[Self], FixedLength(6)]:
