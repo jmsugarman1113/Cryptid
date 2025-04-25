@@ -12,6 +12,9 @@ py-static:
 
 py-test:
 	coverage run -m pytest tests/
+
+py-test-report:
+	coverage run -m pytest tests/
 	coverage report -m --skip-empty --omit="tests/*"
 
 py-ci:
