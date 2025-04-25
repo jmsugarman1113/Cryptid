@@ -90,6 +90,11 @@ class TestDoubledHeightCoordinateHex:
             AxialCoordinateHex(3, -1)
         ) == DoubledHeightCoordinateHex(3, 1)
 
+        assert DoubledHeightCoordinateHex(0, 4).to_axial_coordinate_hex() == AxialCoordinateHex(0, 2)
+        assert DoubledHeightCoordinateHex.from_axial_coordinate_hex(
+            AxialCoordinateHex(0, 2)
+        ) == DoubledHeightCoordinateHex(0, 4)
+
     def test_cube_conversion(self):
         assert DoubledHeightCoordinateHex.origin().to_cube_coordinate_hex() == CubeCoordinateHex.origin()
         assert (
@@ -101,6 +106,11 @@ class TestDoubledHeightCoordinateHex:
         assert DoubledHeightCoordinateHex.from_cube_coordinate_hex(
             CubeCoordinateHex(3, -1, -2)
         ) == DoubledHeightCoordinateHex(3, 1)
+
+        assert DoubledHeightCoordinateHex(0, 4).to_cube_coordinate_hex() == CubeCoordinateHex(0, 2, -2)
+        assert DoubledHeightCoordinateHex.from_cube_coordinate_hex(
+            CubeCoordinateHex(0, 2, -2)
+        ) == DoubledHeightCoordinateHex(0, 4)
 
     def test_addition(self):
         assert DoubledHeightCoordinateHex(3, 5) + DoubledHeightCoordinateHex(3, 5) == DoubledHeightCoordinateHex(6, 10)
