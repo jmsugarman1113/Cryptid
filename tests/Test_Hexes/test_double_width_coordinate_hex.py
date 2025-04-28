@@ -13,8 +13,8 @@ def get_random_DoubleWidthCoordinateHex(
     column_offset: int = 0,
 ) -> DoubledWidthCoordinateHex:
     random.seed(random_seed)
-    row = random.randint(-radius, radius) + row_offset
-    col = random.randint(-radius, radius) // 2 + column_offset
+    col = random.randint(-radius, radius) + row_offset
+    row = random.randint(-radius, radius) // 2 + column_offset
     if (row + col) % 2 != 0:
         row += 1
     return DoubledWidthCoordinateHex.from_row_col(row, col)

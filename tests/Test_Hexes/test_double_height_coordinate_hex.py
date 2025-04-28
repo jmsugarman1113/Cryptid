@@ -6,7 +6,7 @@ import pytest
 from cryptid.hex import AxialCoordinateHex, CubeCoordinateHex, DoubledHeightCoordinateHex
 
 
-def get_random_DoubleHeightCoordinateHex(  # ignore N
+def get_random_DoubleHeightCoordinateHex(
     radius: int,
     random_seed: int,
     row_offset: int = 0,
