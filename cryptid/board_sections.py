@@ -3,8 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Annotated, Final
 
-from cryptid.Hex import DoubledHeightCoordinateHex, FixedLength, Hex
-from cryptid.Tile import AnimalTerritory, Terrain, Tile
+from cryptid.hex import DoubledHeightCoordinateHex, FixedLength, Hex
+from cryptid.tile import AnimalTerritory, Terrain, Tile
 
 
 @dataclass

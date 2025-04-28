@@ -3,10 +3,10 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Annotated
 
-from cryptid.BoardSections import BOARD_SECTION_OFFSETS, BOARD_SECTIONS
-from cryptid.Hex import FixedLength, Hex
-from cryptid.SetupCard import SetupCard
-from cryptid.Tile import Structure, Tile
+from cryptid.board_sections import BOARD_SECTION_OFFSETS, BOARD_SECTIONS
+from cryptid.hex import FixedLength, Hex
+from cryptid.setup_card import SetupCard
+from cryptid.tile import Structure, Tile
 
 
 @dataclass

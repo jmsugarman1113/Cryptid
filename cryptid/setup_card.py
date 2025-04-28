@@ -3,9 +3,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Annotated
 
-from cryptid.Clue import Clue
-from cryptid.Hex import FixedLength, Hex
-from cryptid.Tile import Structure
+from cryptid.clue import Clue
+from cryptid.hex import FixedLength, Hex
+from cryptid.tile import Structure
 
 
 @dataclass

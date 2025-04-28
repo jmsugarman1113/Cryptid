@@ -3,7 +3,7 @@ import random
 
 import pytest
 
-from cryptid.Hex import AxialCoordinateHex, CubeCoordinateHex, DoubledWidthCoordinateHex
+from cryptid.hex import AxialCoordinateHex, CubeCoordinateHex, DoubledWidthCoordinateHex
 
 
 def get_random_DoubleWidthCoordinateHex(

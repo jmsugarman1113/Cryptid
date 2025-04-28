@@ -3,10 +3,10 @@ import random
 
 import pytest
 
-from cryptid.Hex import AxialCoordinateHex, CubeCoordinateHex, DoubledHeightCoordinateHex
+from cryptid.hex import AxialCoordinateHex, CubeCoordinateHex, DoubledHeightCoordinateHex
 
 
-def get_random_DoubleHeightCoordinateHex(
+def get_random_DoubleHeightCoordinateHex(  # ignore N
     radius: int,
     random_seed: int,
     row_offset: int = 0,

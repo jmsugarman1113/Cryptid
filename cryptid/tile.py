@@ -5,7 +5,7 @@ from enum import StrEnum, auto
 from types import NotImplementedType
 from typing import Any, Optional
 
-from cryptid.Hex import Hex
+from cryptid.hex import Hex
 
 
 class UpperStrEnum(StrEnum):

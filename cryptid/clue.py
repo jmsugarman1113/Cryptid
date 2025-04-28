@@ -4,11 +4,11 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Annotated, Any, Final
 
-from cryptid.Hex import FixedLength
-from cryptid.Tile import AnimalTerritory, Color, Shape, Terrain, Tile
+from cryptid.hex import FixedLength
+from cryptid.tile import AnimalTerritory, Color, Shape, Terrain, Tile
 
 if TYPE_CHECKING:
-    from cryptid.Board import Board
+    from cryptid.board import Board
 
 
 @dataclass(frozen=True)

@@ -1,6 +1,6 @@
 from dataclasses import fields
 
-from cryptid.Hex import (
+from cryptid.hex import (
     AxialCoordinateHex,
     CubeCoordinateHex,
     DoubledHeightCoordinateHex,

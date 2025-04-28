@@ -1,9 +1,9 @@
 # mypy: ignore-errors
 
-from cryptid.BoardSections import BOARD_SECTIONS
-from cryptid.Clue import GREEN_CLUES
-from cryptid.Hex import AxialCoordinateHex, DoubledHeightCoordinateHex
-from cryptid.Tile import Terrain
+from cryptid.board_sections import BOARD_SECTIONS
+from cryptid.clue import GREEN_CLUES
+from cryptid.hex import AxialCoordinateHex, DoubledHeightCoordinateHex
+from cryptid.tile import Terrain
 
 if __name__ == "__main__":
     h = DoubledHeightCoordinateHex(0, 2)
