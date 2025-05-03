@@ -341,19 +341,19 @@ class AxialCoordinateHex(VectorHex):
     def reflect_over_q_value(self, q: int = 0) -> Self:
         reference_point = AxialCoordinateHex(q, 0)
         shifted = self.to_axial_coordinate_hex() - reference_point
-        reflected = shifted.reflect_over_Q_axis().reflect_over_hex()
+        reflected = shifted.reflect_over_q_axis().reflect_over_hex()
         return self.from_axial_coordinate_hex(reflected + reference_point)
 
     def reflect_over_r_value(self, r: int = 0) -> Self:
         reference_point = AxialCoordinateHex(0, r)
         shifted = self.to_axial_coordinate_hex() - reference_point
-        reflected = shifted.reflect_over_R_axis().reflect_over_hex()
+        reflected = shifted.reflect_over_r_axis().reflect_over_hex()
         return self.from_axial_coordinate_hex(reflected + reference_point)
 
     def reflect_over_s_value(self, s: int = 0) -> Self:
-        reference_point = AxialCoordinateHex(s, 0)
+        reference_point = AxialCoordinateHex(-s, 0)  # equiv of Axial(r=0, s=s) to mimic the above on the q and r axes
         shifted = self.to_axial_coordinate_hex() - reference_point
-        reflected = shifted.reflect_over_S_axis().reflect_over_hex()
+        reflected = shifted.reflect_over_s_axis().reflect_over_hex()
         return self.from_axial_coordinate_hex(reflected + reference_point)
 
 

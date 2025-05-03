@@ -185,6 +185,70 @@ class TestAxialCoordinateHex:
         h = AxialCoordinateHex(1, 3)
         assert h.reflect_over_hex() == -h
 
+    def test_reflect_over_q_axis(self):
+        assert AxialCoordinateHex.origin().reflect_over_q_axis() == AxialCoordinateHex.origin()
+        assert AxialCoordinateHex(3, -5).reflect_over_q_axis() == AxialCoordinateHex(3, 2)
+        original = get_random_AxialCooredinateHex(20, 1234)
+        reflected = original.reflect_over_q_axis()
+        assert original.q == reflected.q
+        assert original.r == reflected._s
+        assert original._s == reflected.r
+
+    def test_reflect_over_r_axis(self):
+        assert AxialCoordinateHex.origin().reflect_over_r_axis() == AxialCoordinateHex.origin()
+        assert AxialCoordinateHex(3, -5).reflect_over_r_axis() == AxialCoordinateHex(2, -5)
+        original = get_random_AxialCooredinateHex(20, 2345)
+        reflected = original.reflect_over_r_axis()
+        assert original.q == reflected._s
+        assert original.r == reflected.r
+        assert original._s == reflected.q
+
+    def test_reflect_over_s_axis(self):
+        assert AxialCoordinateHex.origin().reflect_over_s_axis() == AxialCoordinateHex.origin()
+        assert AxialCoordinateHex(3, -5).reflect_over_s_axis() == AxialCoordinateHex(-5, 3)
+        original = get_random_AxialCooredinateHex(20, 3456)
+        reflected = original.reflect_over_s_axis()
+        assert original.q == reflected.r
+        assert original.r == reflected.q
+        assert original._s == reflected._s
+
+    def test_reflect_over_q_value(self):
+        h1 = get_random_AxialCooredinateHex(20, 4567)
+        assert h1.reflect_over_q_value(0) == AxialCoordinateHex(-h1.q, -h1._s)
+        assert h1.reflect_over_q_value(0) == -h1.reflect_over_q_axis()
+
+        for n in range(-5, 5):
+            assert h1.reflect_over_q_value(h1.q + n) == AxialCoordinateHex(h1.q + 2 * n, h1.r - n)
+
+        assert AxialCoordinateHex(4, -5).reflect_over_q_value(-1) == AxialCoordinateHex(-6, 0)
+
+        assert AxialCoordinateHex(2, 2).reflect_over_q_value(3) == AxialCoordinateHex(4, 1)
+
+    def test_reflect_over_r_value(self):
+        h1 = get_random_AxialCooredinateHex(20, 5678)
+        assert h1.reflect_over_r_value(0) == AxialCoordinateHex(-h1._s, -h1.r)
+        assert h1.reflect_over_r_value(0) == -h1.reflect_over_r_axis()
+
+        for n in range(-5, 5):
+            assert h1.reflect_over_r_value(h1.r + n) == AxialCoordinateHex(h1.q - n, h1.r + 2 * n)
+
+        assert AxialCoordinateHex(-1, -2).reflect_over_r_value(-1) == AxialCoordinateHex(-2, 0)
+
+        assert AxialCoordinateHex(-2, 4).reflect_over_r_value(1) == AxialCoordinateHex(1, -2)
+
+    def test_reflect_over_s_value(self):
+        h1 = get_random_AxialCooredinateHex(20, 6789)
+        print(h1)
+        assert h1.reflect_over_s_value(0) == AxialCoordinateHex(-h1.r, -h1.q)
+        assert h1.reflect_over_s_value(0) == -h1.reflect_over_s_axis()
+
+        for n in range(-5, 5):
+            assert h1.reflect_over_s_value(h1._s + n) == AxialCoordinateHex(h1.q - n, h1.r - n)
+
+        assert AxialCoordinateHex(-2, -3).reflect_over_s_value(1) == AxialCoordinateHex(2, 1)
+
+        assert AxialCoordinateHex(-2, 4).reflect_over_s_value(-1) == AxialCoordinateHex(-3, 3)
+
     def test_distance(self):
         h = get_random_AxialCooredinateHex(radius=20, random_seed=13)
         assert all(h.distance(other) == 1 for other in h.neighbors)
