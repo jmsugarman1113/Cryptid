@@ -13,7 +13,7 @@ py-static:
 py-test:
 	coverage run -m pytest tests/
 
-py-test-report:
+coverage:
 	make py-test
 	coverage report -m --skip-empty --omit="tests/*"
 
