@@ -17,9 +17,8 @@ class Hex(ABC):
     q: int
     r: int
 
-    @abstractmethod
     def distance(self, other: Self) -> int:
-        pass
+        return self.to_axial_coordinate_hex().distance(other.to_axial_coordinate_hex())
 
     @property
     @abstractmethod
@@ -60,7 +59,7 @@ class Hex(ABC):
     def reflect_over_hex(self, other: Optional[Self] = None) -> Self:
         if other is None:
             other = self.origin()
-        elif not isinstance(other, self.__class__):
+        elif not isinstance(other, self.__class__) and not isinstance(self, other.__class__):
             raise NotImplementedError(f"reflection is only defined between the same type of Hex.  Trying to reflect {self.__class__} and {other.__class__}")  # fmt: skip
         # return 2*other - self
         return self.from_axial_coordinate_hex(2 * other.to_axial_coordinate_hex() - self.to_axial_coordinate_hex())
@@ -82,7 +81,7 @@ class Hex(ABC):
 
     def __eq__(self, other: Any) -> bool | NotImplementedType:
         ## only compare same families of hexes, works because abstract hexes will never be instantiated
-        if not isinstance(other, self.__class__):
+        if not isinstance(other, Hex):
             return NotImplemented  # (f"equality is only defined between the same type of Hexes.  Trying to compare {self.__class__} and {other.__class__} ")  # fmt: skip
         return self.distance(other) == 0
 
@@ -170,10 +169,10 @@ class OffsetCoordinateHex(Hex, ABC):
     def from_row_col(cls, row: int, col: int) -> Self:
         return cls(col, row)
 
-    def distance(self, other: Self) -> int:
-        if not isinstance(other, self.__class__):
-            raise NotImplementedError(f"distance is only defined between the same type of Hexes.  Trying to compare {self.__class__} to {other.__class__}")  # fmt: skip
-        return self.to_axial_coordinate_hex().distance(other.to_axial_coordinate_hex())
+    # def distance(self, other: Self) -> int:
+    #     if not isinstance(other, self.__class__):
+    #         raise NotImplementedError(f"distance is only defined between the same type of Hexes.  Trying to compare {self.__class__} to {other.__class__}")  # fmt: skip
+    #     return self.to_axial_coordinate_hex().distance(other.to_axial_coordinate_hex())
 
 
 @dataclass(frozen=True)
@@ -273,6 +272,8 @@ class AxialCoordinateHex(VectorHex):
         ]
 
     def distance(self, other: AxialCoordinateHex) -> int:
+        if type(other) is not AxialCoordinateHex:
+            return super().distance(other)
         d = self - other
         return max(abs(d.q), abs(d.r), abs(d._s))
 
@@ -381,6 +382,10 @@ class CubeCoordinateHex(AxialCoordinateHex):
     @classmethod
     def from_axial_coordinate_hex(cls, axial_hex: AxialCoordinateHex) -> CubeCoordinateHex:
         return axial_hex.to_cube_coordinate_hex()
+
+    @classmethod
+    def from_cube_coordinate_hex(cls, cube_hex: CubeCoordinateHex) -> CubeCoordinateHex:
+        return cube_hex.to_cube_coordinate_hex()
 
     @classmethod
     def from_2d_coordinates(cls, q: int, r: int) -> CubeCoordinateHex:
