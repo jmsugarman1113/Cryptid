@@ -78,6 +78,10 @@ class TestHexConversions:
             assert other_origin == hex_type.origin()
             assert all(getattr(other_origin, f.name) == 0 for f in fields(other_origin))
 
+            from_other_origin = hex_type.origin().to_axial_coordinate_hex()
+            assert from_other_origin == axial_origin
+            assert from_other_origin.q == 0 and from_other_origin.r == 0
+
         self.conversion_helper(axial_origin, *[hex_type.origin() for hex_type in other_hex_types])
 
     def test_conversions_1(self):

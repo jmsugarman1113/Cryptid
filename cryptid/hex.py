@@ -403,22 +403,31 @@ class EvenRowOffsetCoordinateHex(OffsetCoordinateHex):
 
     @property
     def neighbor_directions(self) -> Annotated[list[EvenRowOffsetCoordinateHex], FixedLength(6)]:
-        if self.row & 1:
-            return [
-                EvenRowOffsetCoordinateHex(1, 0),
-                EvenRowOffsetCoordinateHex(0, -1),
-                EvenRowOffsetCoordinateHex(-1, -1),
-                EvenRowOffsetCoordinateHex(-1, 0),
-                EvenRowOffsetCoordinateHex(-1, 1),
-                EvenRowOffsetCoordinateHex(0, 1),
-            ]
+        # if self.row & 1:
+        #     return [
+        #         EvenRowOffsetCoordinateHex(1, 0),
+        #         EvenRowOffsetCoordinateHex(0, -1),
+        #         EvenRowOffsetCoordinateHex(-1, -1),
+        #         EvenRowOffsetCoordinateHex(-1, 0),
+        #         EvenRowOffsetCoordinateHex(-1, 1),
+        #         EvenRowOffsetCoordinateHex(0, 1),
+        #     ]
+        # return [
+        #     EvenRowOffsetCoordinateHex(1, 0),
+        #     EvenRowOffsetCoordinateHex(1, -1),
+        #     EvenRowOffsetCoordinateHex(0, -1),
+        #     EvenRowOffsetCoordinateHex(-1, 0),
+        #     EvenRowOffsetCoordinateHex(0, 1),
+        #     EvenRowOffsetCoordinateHex(1, 1),
+        # ]
+
         return [
             EvenRowOffsetCoordinateHex(1, 0),
-            EvenRowOffsetCoordinateHex(1, -1),
             EvenRowOffsetCoordinateHex(0, -1),
+            EvenRowOffsetCoordinateHex(-1, -1),
             EvenRowOffsetCoordinateHex(-1, 0),
+            EvenRowOffsetCoordinateHex(-1, 1),
             EvenRowOffsetCoordinateHex(0, 1),
-            EvenRowOffsetCoordinateHex(1, 1),
         ]
 
 
