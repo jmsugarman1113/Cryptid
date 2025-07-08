@@ -1,13 +1,12 @@
 import math
-from typing import Final, Iterable, Callable
+from typing import Callable, Final, Iterable
 
 import matplotlib.pyplot as plt
 from matplotlib.patches import RegularPolygon
 
-from cryptid.board_sections import BOARD_SECTIONS
 from cryptid.board import Board
 from cryptid.hex import AxialCoordinateHex
-from cryptid.tile import Terrain, Tile, AnimalTerritory, Structure
+from cryptid.tile import AnimalTerritory, Terrain, Tile
 
 SQRT3: Final[float] = math.sqrt(3)
 SQRT3_OVER2: Final[float] = math.sqrt(3) / 2
@@ -60,12 +59,12 @@ def plot_hex(
         animal_hexagon = RegularPolygon(
             (x, y),
             numVertices=6,
-            radius=2/3 * radius,
+            radius=2 / 3 * radius,
             orientation=orientation,
             edgecolor=animal_color,
-            alpha=.8,
+            alpha=0.8,
             fill=False,
-            linestyle='--'
+            linestyle="--",
         )
         ax.add_patch(animal_hexagon)
     # Also add a text label
@@ -99,7 +98,7 @@ def plot_flat(tiles: Iterable[Tile], radius: float = 1, text_size: int = 5, anno
             tile=tile,
             radius=radius,
             text_size=text_size,
-            orientation=math.pi/6,
+            orientation=math.pi / 6,
             coords_func=hex_to_flat_coords,
             ax=ax,
             annotate_position=annotate_position,
@@ -109,6 +108,6 @@ def plot_flat(tiles: Iterable[Tile], radius: float = 1, text_size: int = 5, anno
 
 if __name__ == "__main__":
     # board = BOARD_SECTIONS[0]
-    board = Board.from_board_sections([1,2,3,4,5,6])
+    board = Board.from_board_sections([1, 2, 3, 4, 5, 6])
     plot_pointy(board.tiles.values())
     plot_flat(board.tiles.values())
