@@ -4,18 +4,7 @@ import random
 import pytest
 
 from cryptid.hex import AxialCoordinateHex, CubeCoordinateHex
-
-
-def get_random_AxialCooredinateHex(
-    radius: int,
-    random_seed: int,
-    row_offset: int = 0,
-    column_offset: int = 0,
-) -> AxialCoordinateHex:
-    random.seed(random_seed)
-    q = random.randint(-radius, radius) + row_offset
-    r = random.randint(-radius, radius) + column_offset
-    return AxialCoordinateHex(q, r)
+from tests.test_utils import get_random_AxialCooredinateHex
 
 
 class TestAxialCoordinateHex:

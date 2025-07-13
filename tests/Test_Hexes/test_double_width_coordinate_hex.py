@@ -4,20 +4,7 @@ import random
 import pytest
 
 from cryptid.hex import AxialCoordinateHex, CubeCoordinateHex, DoubledWidthCoordinateHex
-
-
-def get_random_DoubleWidthCoordinateHex(
-    radius: int,
-    random_seed: int,
-    row_offset: int = 0,
-    column_offset: int = 0,
-) -> DoubledWidthCoordinateHex:
-    random.seed(random_seed)
-    col = random.randint(-radius, radius) + row_offset
-    row = random.randint(-radius, radius) // 2 + column_offset
-    if (row + col) % 2 != 0:
-        row += 1
-    return DoubledWidthCoordinateHex.from_row_col(row, col)
+from tests.test_utils import get_random_DoubleWidthCoordinateHex
 
 
 class TestDoubledWidthCoordinateHex:
