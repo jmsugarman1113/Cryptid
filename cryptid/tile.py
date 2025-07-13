@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, replace
-from enum import StrEnum, auto
+from enum import StrEnum, auto, unique
 from types import NotImplementedType
 from typing import Any, Optional
 
@@ -14,6 +14,7 @@ class UpperStrEnum(StrEnum):
         return name.upper()
 
 
+@unique
 class Terrain(UpperStrEnum):
     WATER = auto()
     MOUNTAIN = auto()
@@ -22,11 +23,13 @@ class Terrain(UpperStrEnum):
     DESERT = auto()
 
 
+@unique
 class AnimalTerritory(UpperStrEnum):
     BEAR = auto()
     COUGAR = auto()
 
 
+@unique
 class Color(UpperStrEnum):
     WHITE = auto()
     GREEN = auto()
@@ -34,11 +37,13 @@ class Color(UpperStrEnum):
     BLACK = auto()
 
 
+@unique
 class Shape(UpperStrEnum):
     STANDING_STONE = auto()
     ABANDONED_SHACK = auto()
 
 
+@unique
 class PlayerName(UpperStrEnum):
     PLAYER1 = auto()
     PLAYER2 = auto()
@@ -47,7 +52,7 @@ class PlayerName(UpperStrEnum):
     PLAYER5 = auto()
 
 
-@dataclass
+@dataclass(frozen=True)
 class Structure:
     shape: Shape
     color: Color
@@ -64,9 +69,9 @@ class Tile:
     structure: Optional[Structure] = None
 
     def __add__(self, other: Any) -> Tile | NotImplementedType:
-        if isinstance(other, self.__class__):
+        if isinstance(other, Tile):
             return replace(self, hex=self.hex + other.hex)
-        if isinstance(other, self.hex.__class__):
+        if isinstance(other, Hex):
             return replace(self, hex=self.hex + other)
         return NotImplemented
 
@@ -74,9 +79,9 @@ class Tile:
         return self.__add__(other)
 
     def __sub__(self, other: Any) -> Tile | NotImplementedType:
-        if isinstance(other, self.__class__):
+        if isinstance(other, Tile):
             return replace(self, hex=self.hex - other.hex)
-        if isinstance(other, self.hex.__class__):
+        if isinstance(other, Hex):
             return replace(self, hex=self.hex - other)
         return NotImplemented
 

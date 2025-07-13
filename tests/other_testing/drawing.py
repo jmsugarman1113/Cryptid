@@ -27,7 +27,7 @@ ANIMAL_COLOR_MAPPING: Final[dict[AnimalTerritory, str]] = {
 
 def hex_to_pointy_coords(axial: AxialCoordinateHex, radius: float = 1) -> tuple[float, float]:
     x = radius * (SQRT3 * axial.q + SQRT3_OVER2 * axial.r)
-    y = -radius * 1.5 * axial.r
+    y = -1.5 * radius * axial.r
     return x, y
 
 
@@ -109,5 +109,5 @@ def plot_flat(tiles: Iterable[Tile], radius: float = 1, text_size: int = 5, anno
 if __name__ == "__main__":
     # board = BOARD_SECTIONS[0]
     board = Board.from_board_sections([1, 2, 3, 4, 5, 6])
-    plot_pointy(board.tiles.values())
+    # plot_pointy(board.tiles.values())
     plot_flat(board.tiles.values())
