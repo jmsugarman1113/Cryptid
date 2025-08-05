@@ -114,6 +114,9 @@ class Hex(ABC):
     def __neg__(self) -> Self | NotImplementedType:
         return -1 * self
 
+    def __hash__(self) -> int:
+        return hash(self.to_2d_coordinates())
+
     # NOTE: specifically don't implement radd and rsub so its clear what type of Hex will come out of arithmetic operations
 
 
