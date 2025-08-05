@@ -11,7 +11,7 @@ class TestBoard:
         order = [1, 2, 3, 4, 5, 6]
         random.seed(0)
         random.shuffle(order)
-        board = Board.from_board_sections(order)
+        board = Board.from_board_sections(order, [False] * 6)
         assert len(board.tiles) == 108
 
         for offset, board_section_idx in zip(BOARD_SECTION_OFFSETS, order):
@@ -22,7 +22,7 @@ class TestBoard:
 
     def test_board_from_board_sections2(self):
         order = [1, 2, 3, 4, 5, 6]
-        board = Board.from_board_sections(order)
+        board = Board.from_board_sections(order, [False] * 6)
         assert len(board.tiles) == 108
 
         for offset, board_section_idx in zip(BOARD_SECTION_OFFSETS, order):

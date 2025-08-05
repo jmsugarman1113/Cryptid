@@ -86,7 +86,18 @@ class Tile:
         return NotImplemented
 
     def __rsub__(self, other: Any) -> Tile | NotImplementedType:
-        return self.__sub__(other)
+        return -self + other
+
+    def __mul__(self, other: Any) -> Tile | NotImplementedType:
+        if not isinstance(other, int):
+            return NotImplemented
+        return replace(self, hex=other * self.hex)
+
+    def __rmul__(self, other: Any) -> Tile | NotImplementedType:
+        return self.__mul__(other)
+
+    def __neg__(self) -> Tile | NotImplementedType:
+        return replace(self, hex=-self.hex)
 
     # def __str__(self) -> str:
     #     attr_strs = [

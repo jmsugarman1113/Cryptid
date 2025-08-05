@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Annotated, Final
 
-from cryptid.hex import DoubledHeightCoordinateHex, FixedLength, Hex
+from cryptid.hex import AxialCoordinateHex, DoubledHeightCoordinateHex, FixedLength, Hex
 from cryptid.tile import AnimalTerritory, Terrain, Tile
 
 
@@ -17,6 +17,13 @@ class BoardSection:
             new_tile: Tile = tile + offset_hex
             new_tiles[new_tile.hex] = new_tile
         return BoardSection(tiles=new_tiles)
+
+    def invert(self, inverted: bool) -> BoardSection:
+        if not inverted:
+            return self
+
+        new_tile_list: list[Tile] = [AxialCoordinateHex(5, 0) - tile for tile in self.tiles.values()]  # type: ignore
+        return BoardSection.from_tile_list(new_tile_list)
 
     @classmethod
     def from_tile_list(cls, tile_list: Annotated[list[Tile], FixedLength(18)]) -> BoardSection:

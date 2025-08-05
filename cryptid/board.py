@@ -14,10 +14,14 @@ class Board:
     tiles: Annotated[dict[Hex, Tile], FixedLength(108)]
 
     @classmethod
-    def from_board_sections(cls, order: Annotated[list[int], FixedLength(6)]) -> Board:
+    def from_board_sections(
+        cls,
+        order: Annotated[list[int], FixedLength(6)],
+        orientation: Annotated[list[bool], FixedLength(6)],
+    ) -> Board:
         tiles: dict[Hex, Tile] = dict()
-        for offset, board_section in enumerate(order):
-            tiles |= BOARD_SECTIONS[board_section - 1].offset(BOARD_SECTION_OFFSETS[offset]).tiles
+        for offset, (board_section, inverted) in enumerate(zip(order, orientation)):
+            tiles |= BOARD_SECTIONS[board_section - 1].invert(inverted).offset(BOARD_SECTION_OFFSETS[offset]).tiles
         return cls(tiles=tiles)
 
     def place_structure(self, structure: Structure, location: Hex) -> None:
@@ -25,7 +29,7 @@ class Board:
 
     @classmethod
     def from_setup_card(cls, card: SetupCard) -> Board:
-        board = cls.from_board_sections(card.board_sections)
+        board = cls.from_board_sections(card.board_sections, card.board_sections_inverted)
         for location, structure in card.structures:
             board.place_structure(structure, location)
         return board
