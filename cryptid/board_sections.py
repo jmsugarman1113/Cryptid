@@ -7,7 +7,7 @@ from cryptid.hex import AxialCoordinateHex, DoubledHeightCoordinateHex, FixedLen
 from cryptid.tile import AnimalTerritory, Terrain, Tile
 
 
-@dataclass
+@dataclass(frozen=True)
 class BoardSection:
     tiles: Annotated[dict[Hex, Tile], FixedLength(18)]
 
@@ -18,7 +18,7 @@ class BoardSection:
             new_tiles[new_tile.hex] = new_tile
         return BoardSection(tiles=new_tiles)
 
-    def invert(self, inverted: bool) -> BoardSection:
+    def invert(self, inverted: bool = True) -> BoardSection:
         if not inverted:
             return self
 

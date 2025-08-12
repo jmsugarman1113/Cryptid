@@ -34,3 +34,29 @@ class TestBoardSections:
         tile = new_board_section.tiles[DoubledHeightCoordinateHex(6, 10)]
         assert tile.terrain == Terrain.DESERT
         assert tile.animal_territory == AnimalTerritory.BEAR
+
+    def test_inversion_1(self):
+        for board_section in BOARD_SECTIONS:
+            inverted_section = board_section.invert(False)
+            assert inverted_section is board_section
+
+        for board_section in BOARD_SECTIONS:
+            assert board_section.invert().invert() == board_section
+
+    def test_inversion_2(self):
+        for board_section in BOARD_SECTIONS:
+            inverted_section = board_section.invert()
+            assert inverted_section is not board_section
+            for hex, inverted_hex in [
+                (DoubledHeightCoordinateHex(0, 0), DoubledHeightCoordinateHex(5, 5)),
+                (DoubledHeightCoordinateHex(5, 5), DoubledHeightCoordinateHex(0, 0)),
+                (DoubledHeightCoordinateHex(4, 2), DoubledHeightCoordinateHex(1, 3)),
+            ]:
+                tile = board_section.tiles[hex]
+                inverted_tile = inverted_section.tiles[inverted_hex]
+                assert tile.terrain == inverted_tile.terrain
+                assert tile.animal_territory == inverted_tile.animal_territory
+                assert tile.structure == inverted_tile.structure
+                assert tile.hex == hex
+                assert inverted_tile.hex == inverted_hex
+                assert hex + inverted_hex == DoubledHeightCoordinateHex(5, 5)
