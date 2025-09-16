@@ -33,4 +33,4 @@ class SetupCard:
         }
 
 
-SETUP_CARDS: Final[list[SetupCard]] = []
+SETUP_CARDS: Final[Annotated[list[SetupCard], 54]] = []

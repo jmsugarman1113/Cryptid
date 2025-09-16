@@ -34,3 +34,5 @@ class TestBoard:
         hex_location = DoubledHeightCoordinateHex(10, 10)
         assert board.tiles[hex_location].terrain == Terrain.WATER
         assert board.tiles[hex_location].animal_territory == AnimalTerritory.BEAR
+
+    # TODO: test board section inversion

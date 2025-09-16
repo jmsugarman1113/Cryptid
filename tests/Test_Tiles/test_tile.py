@@ -1,3 +1,5 @@
+import pytest
+
 from cryptid.hex import DoubledHeightCoordinateHex
 from cryptid.tile import AnimalTerritory, Color, Shape, Structure, Terrain, Tile
 
@@ -27,6 +29,12 @@ class TestTile:
         assert tile_AB.animal_territory == AnimalTerritory.BEAR
         assert tile_AB.structure == tileA.structure
         assert tile_AB.structure is None
+        assert tile_AB == Tile(
+            hex=tileA.hex + tileB.hex,
+            terrain=tileA.terrain,
+            animal_territory=tileA.animal_territory,
+            structure=tileA.structure,
+        )
 
         tile_BA = tileB + tileA
         assert isinstance(tile_BA, Tile)
@@ -38,6 +46,12 @@ class TestTile:
         assert tile_BA.animal_territory is None
         assert tile_BA.structure == tileB.structure
         assert tile_BA.structure == Structure(Shape.STANDING_STONE, Color.BLUE)
+        assert tile_BA == Tile(
+            hex=tileB.hex + tileA.hex,
+            terrain=tileB.terrain,
+            animal_territory=tileB.animal_territory,
+            structure=tileB.structure,
+        )
 
         tileA_offset = tileA + hex_offset
         assert isinstance(tileA_offset, Tile)
@@ -49,6 +63,12 @@ class TestTile:
         assert tileA_offset.animal_territory == AnimalTerritory.BEAR
         assert tileA_offset.structure == tileA.structure
         assert tileA_offset.structure is None
+        assert tileA_offset == Tile(
+            hex=tileA.hex + hex_offset,
+            terrain=tileA.terrain,
+            animal_territory=tileA.animal_territory,
+            structure=tileA.structure,
+        )
 
         tileB_offset = tileB + hex_offset
         assert isinstance(tileB_offset, Tile)
@@ -60,6 +80,12 @@ class TestTile:
         assert tileB_offset.animal_territory is None
         assert tileB_offset.structure == tileB.structure
         assert tileB_offset.structure == Structure(Shape.STANDING_STONE, Color.BLUE)
+        assert tileB_offset == Tile(
+            hex=tileB.hex + hex_offset,
+            terrain=tileB.terrain,
+            animal_territory=tileB.animal_territory,
+            structure=tileB.structure,
+        )
 
         tileA_offset2 = tileA + DoubledHeightCoordinateHex.origin()
         assert isinstance(tileA_offset, Tile)
@@ -84,6 +110,30 @@ class TestTile:
         assert tileB_offset2.animal_territory is None
         assert tileB_offset2.structure == tileB.structure
         assert tileB_offset2.structure == Structure(Shape.STANDING_STONE, Color.BLUE)
+
+        with pytest.raises(TypeError):
+            _ = tileA + 5
+
+    def test_tile_radd(self):
+        tileA = Tile(
+            hex=DoubledHeightCoordinateHex(1, 5),
+            terrain=Terrain.MOUNTAIN,
+            animal_territory=AnimalTerritory.BEAR,
+        )
+        hex_offset = DoubledHeightCoordinateHex(-1, 1)
+
+        tileA_offset = hex_offset + tileA
+
+        assert isinstance(tileA_offset, Tile)
+        assert type(tileA_offset.hex) is type(tileA.hex)
+        assert tileA_offset == Tile(
+            hex=DoubledHeightCoordinateHex(0, 6),
+            terrain=Terrain.MOUNTAIN,
+            animal_territory=AnimalTerritory.BEAR,
+        )
+
+        with pytest.raises(TypeError):
+            _ = 5 + tileA
 
     def test_tile_subtraction(self):
         tileA = Tile(
@@ -166,3 +216,27 @@ class TestTile:
         assert tileB_offset2.animal_territory is None
         assert tileB_offset2.structure == tileB.structure
         assert tileB_offset2.structure == Structure(Shape.STANDING_STONE, Color.BLUE)
+
+        with pytest.raises(TypeError):
+            _ = tileA - 5
+
+    def test_tile_rsub(self):
+        tileA = Tile(
+            hex=DoubledHeightCoordinateHex(1, 5),
+            terrain=Terrain.MOUNTAIN,
+            animal_territory=AnimalTerritory.BEAR,
+        )
+        hex_offset = DoubledHeightCoordinateHex(-1, 1)
+
+        tileA_offset = hex_offset - tileA
+
+        assert isinstance(tileA_offset, Tile)
+        assert type(tileA_offset.hex) is type(tileA.hex)
+        assert tileA_offset == Tile(
+            hex=DoubledHeightCoordinateHex(-2, -4),
+            terrain=Terrain.MOUNTAIN,
+            animal_territory=AnimalTerritory.BEAR,
+        )
+
+        with pytest.raises(TypeError):
+            _ = 5 - tileA
