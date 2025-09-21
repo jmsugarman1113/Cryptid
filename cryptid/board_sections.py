@@ -168,6 +168,17 @@ BOARD_SECTIONS: Final[Annotated[list[BoardSection], FixedLength(6)]] = [
     SECTION_6,
 ]
 
+
+# Board Sections Index Order
+#  0    4
+#  1    5
+#  2    6
+#
+# If sections = [1, 2, 4, 6, 5, 3], the board looks like
+#  1    6
+#  2    5
+#  4    3
+
 BOARD_SECTION_OFFSETS: Final[Annotated[list[DoubledHeightCoordinateHex], FixedLength(6)]] = [
     DoubledHeightCoordinateHex.from_row_col(col=0, row=0),
     DoubledHeightCoordinateHex.from_row_col(col=0, row=6),
