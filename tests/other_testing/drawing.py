@@ -4,7 +4,7 @@ from typing import Callable, Final, Iterable
 import matplotlib.pyplot as plt
 from matplotlib.patches import RegularPolygon
 
-from cryptid.board_sections import BOARD_SECTIONS
+from cryptid.board import Board
 from cryptid.hex import AxialCoordinateHex
 from cryptid.tile import AnimalTerritory, Terrain, Tile
 
@@ -107,7 +107,7 @@ def plot_flat(tiles: Iterable[Tile], radius: float = 1, text_size: int = 5, anno
 
 
 if __name__ == "__main__":
-    board = BOARD_SECTIONS[2].invert(True)
-    # board = Board.from_board_sections([1, 2, 3, 4, 5, 6])
+    # board = BOARD_SECTIONS[2].invert(True)
+    board = Board.from_board_sections(order=[1, 6, 2, 5, 3, 4], orientation=[True, True, False, False, True, False])
     # plot_pointy(board.tiles.values())
     plot_flat(board.tiles.values(), annotate_position=True)

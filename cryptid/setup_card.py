@@ -33,4 +33,21 @@ class SetupCard:
         }
 
 
-SETUP_CARDS: Final[Annotated[list[SetupCard], 54]] = []
+SETUP_CARDS: Final[Annotated[list[SetupCard], 54]] = [
+    # SetupCard(
+    #     board_sections=[1, 6, 2, 5, 3, 4],
+    #     board_sections_inverted=[True, True, False, False, True, False],
+    #     structures=[
+    #         (DoubledHeightCoordinateHex(1, 1), Structure(Shape.STANDING_STONE, Color.BLUE)),
+    #         (DoubledHeightCoordinateHex(3, 5), Structure(Shape.ABANDONED_SHACK, Color.WHITE)),
+    #         (DoubledHeightCoordinateHex(5, 5), Structure(Shape.STANDING_STONE, Color.WHITE)),
+    #         (DoubledHeightCoordinateHex(4, 16), Structure(Shape.ABANDONED_SHACK, Color.BLUE)),
+    #         (DoubledHeightCoordinateHex(11, 1), Structure(Shape.STANDING_STONE, Color.GREEN)),
+    #         (DoubledHeightCoordinateHex(9, 13), Structure(Shape.ABANDONED_SHACK, Color.GREEN)),
+    #     ],
+    #     clues_3_player=(ALPHA_CLUES[28], DELTA_CLUES[85], EPSILON_CLUES[8]),
+    #     clues_4_player=(ALPHA_CLUES[2], BETA_CLUES[43], DELTA_CLUES[52], EPSILON_CLUES[42]),
+    #     clues_5_player=(ALPHA_CLUES[17], BETA_CLUES[19], GAMMA_CLUES[73], DELTA_CLUES[50], EPSILON_CLUES[11]),
+    #     hints_tuple=(25, 74, 15),
+    # ),
+]

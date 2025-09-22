@@ -49,7 +49,7 @@ unfixable = []
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 
 [lint.per-file-ignores]
-"**/{tests}/*" = ["F841", "N806"]
+"**/{tests}/*" = ["F841", "N806", "I"]
 
 [format]
 # Like Black, use double quotes for strings.
