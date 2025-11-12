@@ -88,13 +88,13 @@ class Tile:
     def __rsub__(self, other: Any) -> Tile | NotImplementedType:
         return -self + other
 
-    def __mul__(self, other: Any) -> Tile | NotImplementedType:
-        if not isinstance(other, int):
-            return NotImplemented
-        return replace(self, hex=other * self.hex)
-
-    def __rmul__(self, other: Any) -> Tile | NotImplementedType:
-        return self.__mul__(other)
+    # def __mul__(self, other: Any) -> Tile | NotImplementedType:
+    #     if not isinstance(other, int):
+    #         return NotImplemented
+    #     return replace(self, hex=other * self.hex)
+    #
+    # def __rmul__(self, other: Any) -> Tile | NotImplementedType:
+    #     return self.__mul__(other)
 
     def __neg__(self) -> Tile | NotImplementedType:
         return replace(self, hex=-self.hex)
