@@ -175,7 +175,8 @@ class WithinTwoSpacesOfShapeClue(Clue):
 
     def describe(self) -> str:
         shape_str = self.shape.value.lower().replace("_", " ")
-        return f"within two spaces of a {shape_str}"
+        a_vs_an = "an" if self.shape == Shape.ABANDONED_SHACK else "a"
+        return f"within two spaces of {a_vs_an} {shape_str}"
 
 
 @dataclass(frozen=True)
