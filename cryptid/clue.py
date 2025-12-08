@@ -241,13 +241,13 @@ class WithinThreeSpacesOfColorClue(Clue):
 class NullClue(Clue):
     @property
     def neg(self) -> bool:
-        return False
+        raise TypeError("Incorrectly invoking a Null Clue")
 
     def resolve(self, tile: Tile, board: Board) -> bool:
-        return False
+        raise TypeError("Incorrectly invoking a Null Clue")
 
     def describe(self) -> str:
-        return "Null Clue"
+        raise TypeError("Incorrectly invoking a Null Clue")
 
 
 # fmt: off
