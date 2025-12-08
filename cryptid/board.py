@@ -34,3 +34,12 @@ class Board:
         for location, structure in card.structures:
             board.place_structure(structure, location)
         return board
+
+    def get_tiles_in_range(self, loc: Tile | Hex, range: int) -> list[Tile]:
+        tiles = []
+        if isinstance(loc, Tile):
+            loc = loc.hex
+        for possible_hex in loc.hexes_within_range(range):
+            if (possible_tile := self.tiles.get(possible_hex, None)) is not None:
+                tiles.append(possible_tile)
+        return tiles

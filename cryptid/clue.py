@@ -105,16 +105,10 @@ class WithinOneSpaceOfTerrainClue(Clue):
         return self.negated
 
     def resolve(self, tile: Tile, board: Board) -> bool:
-        for possible_hex in tile.hex.hexes_within_range(1):
-            if (possible_tile := board.tiles.get(possible_hex, None)) is not None:
-                if possible_tile.terrain == self.terrain:
-                    return True
+        for possible_tile in board.get_tiles_in_range(tile, 1):
+            if possible_tile.terrain == self.terrain:
+                return True
         return False
-        # return any(
-        #   (possible_tile := board.tiles.get(possible_hex, None)) is not None
-        #   and possible_tile.terrain == self.terrain
-        #   for possible_hex in curr_tile.hex.hexes_within_range(1)
-        # )
 
     def describe(self) -> str:
         return f"within one space of {self.terrain.value.lower()}"
@@ -133,16 +127,10 @@ class WithinOneSpaceOfEitherAnimalTerritoryClue(Clue):
         return self.negated
 
     def resolve(self, tile: Tile, board: Board) -> bool:
-        for possible_hex in tile.hex.hexes_within_range(1):
-            if (possible_tile := board.tiles.get(possible_hex, None)) is not None:
-                if possible_tile.animal_territory is not None:
-                    return True
+        for possible_tile in board.get_tiles_in_range(tile, 1):
+            if possible_tile.animal_territory is not None:
+                return True
         return False
-        # return any(
-        #   (possible_tile := board.tiles.get(possible_hex, None)) is not None
-        #   and possible_tile.animal_territory is not None
-        #   for possible_hex in curr_tile.hex.hexes_within_range(1)
-        # )
 
     def describe(self) -> str:
         return "within one space of either animal territory"
@@ -167,11 +155,6 @@ class WithinTwoSpacesOfShapeClue(Clue):
                 if getattr(possible_tile.structure, "shape", None) == self.shape:
                     return True
         return False
-        # return any(
-        #   (possible_tile := board.tiles.get(possible_hex, None)) is not None
-        #   and getattr(possible_tile.structure, 'shape', None) == self.shape
-        #   for possible_hex in curr_tile.hex.hexes_within_range(2)
-        # )
 
     def describe(self) -> str:
         shape_str = self.shape.value.lower().replace("_", " ")
@@ -193,16 +176,10 @@ class WithinTwoSpacesOfAnimalTerritoryClue(Clue):
         return self.negated
 
     def resolve(self, tile: Tile, board: Board) -> bool:
-        for possible_hex in tile.hex.hexes_within_range(2):
-            if (possible_tile := board.tiles.get(possible_hex, None)) is not None:
-                if possible_tile.animal_territory == self.animal_territory:
-                    return True
+        for possible_tile in board.get_tiles_in_range(tile, 2):
+            if possible_tile.animal_territory == self.animal_territory:
+                return True
         return False
-        # return any(
-        #   (possible_tile := board.tiles.get(possible_hex, None)) is not None
-        #   and possible_tile.animal_territory == self.animal_territory
-        #   for possible_hex in curr_tile.hex.hexes_within_range(2)
-        # )
 
     def describe(self) -> str:
         return f"within two spaces of {self.animal_territory.value.lower()} territory"
@@ -222,16 +199,10 @@ class WithinThreeSpacesOfColorClue(Clue):
         return self.negated
 
     def resolve(self, tile: Tile, board: Board) -> bool:
-        for possible_hex in tile.hex.hexes_within_range(3):
-            if (possible_tile := board.tiles.get(possible_hex, None)) is not None:
-                if getattr(possible_tile.structure, "color", None) == self.color:
-                    return True
+        for possible_tile in board.get_tiles_in_range(tile, 3):
+            if getattr(possible_tile.structure, "color", None) == self.color:
+                return True
         return False
-        # return any(
-        #   (possible_tile := board.tiles.get(possible_hex, None)) is not None
-        #   and getattr(possible_tile.structure, 'color', None) == self.shape
-        #   for possible_hex in curr_tile.hex.hexes_within_range(3)
-        # )
 
     def describe(self) -> str:
         return f"within three spaces of a {self.color.value.lower()} structure"
