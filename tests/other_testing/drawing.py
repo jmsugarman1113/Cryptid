@@ -4,9 +4,10 @@ from typing import Callable, Final, Iterable
 import matplotlib.pyplot as plt
 from matplotlib.patches import RegularPolygon
 
+from cryptid.setup_card import SETUP_CARDS
 from cryptid.board import Board
 from cryptid.hex import AxialCoordinateHex
-from cryptid.tile import AnimalTerritory, Terrain, Tile
+from cryptid.tile import AnimalTerritory, Terrain, Tile, Shape
 
 SQRT3: Final[float] = math.sqrt(3)
 SQRT3_OVER2: Final[float] = math.sqrt(3) / 2
@@ -22,6 +23,11 @@ HEX_COLOR_MAPPING: Final[dict[Terrain, str]] = {
 ANIMAL_COLOR_MAPPING: Final[dict[AnimalTerritory, str]] = {
     AnimalTerritory.COUGAR: "red",
     AnimalTerritory.BEAR: "black",
+}
+
+SHAPE_MAPPING: dict = {
+    Shape.ABANDONED_SHACK: (3, 0),
+    Shape.STANDING_STONE: (8, math.pi / 8),
 }
 
 
@@ -67,10 +73,37 @@ def plot_hex(
             linestyle="--",
         )
         ax.add_patch(animal_hexagon)
+        ax.text(x, y - radius * 0.75, tile.animal_territory.value.lower(), ha="center", va="center", size=text_size)
+
     # Also add a text label
     if annotate_position:
         ax.text(x, y + 0.2, (axial.q, axial.r), ha="center", va="center", size=text_size)
         ax.text(x, y - 0.2, (tile.hex.q, tile.hex.r), ha="center", va="center", size=text_size)
+
+    if tile.structure:
+        shape_info = SHAPE_MAPPING[tile.structure.shape]
+        shape_abbr = "".join([s[0] for s in tile.structure.shape.value.split("_")])
+        structure_center = (x - 0.6 * radius, y)
+        structure_patch = RegularPolygon(
+            structure_center,
+            numVertices=shape_info[0],
+            radius=radius / 5,
+            orientation=shape_info[1],
+            facecolor=tile.structure.color.value.lower(),
+            alpha=0.8,
+            edgecolor=tile.structure.color.value.lower(),
+        )
+        ax.add_patch(structure_patch)
+        ax.text(
+            structure_center[0],
+            structure_center[1],
+            shape_abbr,
+            ha="center",
+            va="center",
+            size=text_size,
+            color="red",
+            weight="bold",
+        )
 
 
 def plot_pointy(tiles: Iterable[Tile], radius: float = 1, text_size: int = 5, annotate_position: bool = False) -> None:
@@ -108,6 +141,8 @@ def plot_flat(tiles: Iterable[Tile], radius: float = 1, text_size: int = 5, anno
 
 if __name__ == "__main__":
     # board = BOARD_SECTIONS[2].invert(True)
-    board = Board.from_board_sections(order=[1, 6, 2, 5, 3, 4], orientation=[True, True, False, False, True, False])
+    # board = Board.from_board_sections(order=[1, 6, 2, 5, 3, 4], orientation=[True, True, False, False, True, False])
+    card = SETUP_CARDS[0]
+    board = Board.from_setup_card(card)
     # plot_pointy(board.tiles.values())
     plot_flat(board.tiles.values(), annotate_position=True)
