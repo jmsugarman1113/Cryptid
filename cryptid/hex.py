@@ -157,6 +157,9 @@ class VectorHex(Hex, ABC):
     def __neg__(self) -> Self | NotImplementedType:
         return -1 * self
 
+    def __eq__(self, other: Any) -> bool | NotImplementedType:
+        return super().__eq__(other)
+
 
 @dataclass(frozen=True)
 class OffsetCoordinateHex(Hex, ABC):
@@ -177,6 +180,9 @@ class OffsetCoordinateHex(Hex, ABC):
     #         raise NotImplementedError(f"distance is only defined between the same type of Hexes.  Trying to compare {self.__class__} to {other.__class__}")  # fmt: skip
     #     return self.to_axial_coordinate_hex().distance(other.to_axial_coordinate_hex())
 
+    def __eq__(self, other: Any) -> bool | NotImplementedType:
+        return super().__eq__(other)
+
 
 @dataclass(frozen=True)
 class DoubleCoordinateHex(OffsetCoordinateHex, VectorHex, ABC):
@@ -185,6 +191,9 @@ class DoubleCoordinateHex(OffsetCoordinateHex, VectorHex, ABC):
     def __post_init__(self) -> None:
         # print("in Double Coord hex post init")
         assert (self.q + self.r) % 2 == 0, "A doubled coordinate hex must have its coordinates be of the same parity"  # fmt: skip
+
+    def __eq__(self, other: Any) -> bool | NotImplementedType:
+        return super().__eq__(other)
 
 
 @dataclass(frozen=True)
@@ -255,6 +264,9 @@ class DoubledWidthCoordinateHex(DoubleCoordinateHex):
     #     return cube_hex.to_double_width_coordinate_hex()
 
     # TODO: override to_2d to support array with less wasted space??
+
+    def __eq__(self, other: Any) -> bool | NotImplementedType:
+        return super().__eq__(other)
 
 
 @dataclass(frozen=True)
@@ -360,6 +372,9 @@ class AxialCoordinateHex(VectorHex):
         reflected = shifted.reflect_over_s_axis().reflect_over_hex()
         return self.from_axial_coordinate_hex(reflected + reference_point)
 
+    def __eq__(self, other: Any) -> bool | NotImplementedType:
+        return super().__eq__(other)
+
 
 @dataclass(frozen=True)
 class CubeCoordinateHex(AxialCoordinateHex):
@@ -393,6 +408,9 @@ class CubeCoordinateHex(AxialCoordinateHex):
     @classmethod
     def from_2d_coordinates(cls, q: int, r: int) -> CubeCoordinateHex:
         return cls(q=q, r=r, s=-q - r)
+
+    def __eq__(self, other: Any) -> bool | NotImplementedType:
+        return super().__eq__(other)
 
 
 @dataclass(frozen=True)
@@ -433,6 +451,9 @@ class EvenRowOffsetCoordinateHex(OffsetCoordinateHex):
             EvenRowOffsetCoordinateHex(0, 1),
         ]
 
+    def __eq__(self, other: Any) -> bool | NotImplementedType:
+        return super().__eq__(other)
+
 
 @dataclass(frozen=True)
 class OddRowOffsetCoordinateHex(OffsetCoordinateHex):
@@ -462,6 +483,9 @@ class OddRowOffsetCoordinateHex(OffsetCoordinateHex):
             OddRowOffsetCoordinateHex(-1, 1),
             OddRowOffsetCoordinateHex(0, 1),
         ]
+
+    def __eq__(self, other: Any) -> bool | NotImplementedType:
+        return super().__eq__(other)
 
 
 @dataclass(frozen=True)
@@ -493,6 +517,9 @@ class EvenColumnOffsetCoordinateHex(OffsetCoordinateHex):
             EvenColumnOffsetCoordinateHex(0, 1),
         ]
 
+    def __eq__(self, other: Any) -> bool | NotImplementedType:
+        return super().__eq__(other)
+
 
 @dataclass(frozen=True)
 class OddColumnOffsetCoordinateHex(OffsetCoordinateHex):
@@ -522,3 +549,6 @@ class OddColumnOffsetCoordinateHex(OffsetCoordinateHex):
             OddColumnOffsetCoordinateHex(-1, 0),
             OddColumnOffsetCoordinateHex(0, 1),
         ]
+
+    def __eq__(self, other: Any) -> bool | NotImplementedType:
+        return super().__eq__(other)

@@ -116,3 +116,32 @@ class TestHexConversions:
             even_column=EvenColumnOffsetCoordinateHex(5, 2),
             even_row=EvenRowOffsetCoordinateHex(5, -1),
         )
+
+    def test_equality_origin(self):
+        assert AxialCoordinateHex.origin() == AxialCoordinateHex.origin()
+        assert AxialCoordinateHex.origin() == CubeCoordinateHex.origin()
+        assert AxialCoordinateHex.origin() == DoubledHeightCoordinateHex.origin()
+        assert AxialCoordinateHex.origin() == DoubledWidthCoordinateHex.origin()
+        assert AxialCoordinateHex.origin() == OddColumnOffsetCoordinateHex.origin()
+        assert AxialCoordinateHex.origin() == OddRowOffsetCoordinateHex.origin()
+        assert AxialCoordinateHex.origin() == EvenColumnOffsetCoordinateHex.origin()
+        assert AxialCoordinateHex.origin() == EvenRowOffsetCoordinateHex.origin()
+
+    def test_equality_1(self):
+        assert AxialCoordinateHex(1, 2) == AxialCoordinateHex(1, 2)
+        assert AxialCoordinateHex(1, 2) == CubeCoordinateHex(1, 2, -3)
+        assert AxialCoordinateHex(1, 2) == DoubledHeightCoordinateHex(1, 5)
+        assert AxialCoordinateHex(1, 2) == DoubledWidthCoordinateHex(4, 2)
+        assert AxialCoordinateHex(1, 2) == OddRowOffsetCoordinateHex(2, 2)
+        assert AxialCoordinateHex(1, 2) == EvenRowOffsetCoordinateHex(2, 2)
+        assert AxialCoordinateHex(1, 2) == OddColumnOffsetCoordinateHex(1, 2)
+        assert AxialCoordinateHex(1, 2) == EvenColumnOffsetCoordinateHex(1, 3)
+
+        assert AxialCoordinateHex(0, 0) != AxialCoordinateHex(1, 2)
+        assert AxialCoordinateHex(0, 0) != CubeCoordinateHex(1, 2, -3)
+        assert AxialCoordinateHex(0, 0) != DoubledHeightCoordinateHex(1, 5)
+        assert AxialCoordinateHex(0, 0) != DoubledWidthCoordinateHex(4, 2)
+        assert AxialCoordinateHex(0, 0) != OddRowOffsetCoordinateHex(2, 2)
+        assert AxialCoordinateHex(0, 0) != EvenRowOffsetCoordinateHex(2, 2)
+        assert AxialCoordinateHex(0, 0) != OddColumnOffsetCoordinateHex(1, 2)
+        assert AxialCoordinateHex(0, 0) != EvenColumnOffsetCoordinateHex(1, 3)
