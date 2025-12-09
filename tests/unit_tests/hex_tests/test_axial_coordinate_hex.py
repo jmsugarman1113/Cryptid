@@ -246,7 +246,7 @@ class TestAxialCoordinateHex:
 
     def test_range(self):
         center = get_random_AxialCooredinateHex(radius=20, random_seed=11)
-        for radius in range(1, 5):
+        for radius in range(5):
             hexes_in_ranges = center.hexes_within_range(radius)
             assert all(0 <= center.distance(other) <= radius for other in hexes_in_ranges)
             centered_hex_number = 3 * radius * (radius + 1) + 1

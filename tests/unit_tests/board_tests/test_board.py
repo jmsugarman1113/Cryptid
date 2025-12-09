@@ -74,16 +74,13 @@ class TestBoard:
         orientation = [False, False, True, True, False, False]
         board = Board.from_board_sections(order, orientation)
 
+        assert len(board.get_tiles_in_range(loc=DoubledHeightCoordinateHex(-5, -5), range=2)) == 0
+        assert len(board.get_tiles_in_range(loc=DoubledHeightCoordinateHex(0, 0), range=0)) == 1
+        assert len(board.get_tiles_in_range(loc=DoubledHeightCoordinateHex(5, 5), range=0)) == 1
+        assert len(board.get_tiles_in_range(loc=DoubledHeightCoordinateHex(0, 0), range=1)) == 3
         assert len(board.get_tiles_in_range(loc=DoubledHeightCoordinateHex(0, 0), range=2)) == 7
-
         assert len(board.get_tiles_in_range(loc=board.tiles[DoubledHeightCoordinateHex.origin()], range=2)) == 7
-
         assert len(board.get_tiles_in_range(loc=DoubledHeightCoordinateHex(5, 9), range=1)) == 7
-
         assert len(board.get_tiles_in_range(loc=DoubledHeightCoordinateHex(5, 9), range=2)) == 19
-
         assert len(board.get_tiles_in_range(loc=DoubledHeightCoordinateHex(5, 9), range=3)) == 37
-
         assert len(board.get_tiles_in_range(loc=DoubledHeightCoordinateHex(9, 17), range=3)) == 18
-
-    # TODO: test from cards
