@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Annotated, Final
 
+from cryptid.clue import ALPHA_CLUES, BETA_CLUES, DELTA_CLUES, EPSILON_CLUES, GAMMA_CLUES, Clue
 from cryptid.hex import DoubledHeightCoordinateHex, FixedLength, Hex
 from cryptid.tile import Color, Shape, Structure
 
@@ -12,18 +13,18 @@ class SetupCard:
     board_sections: Annotated[list[int], FixedLength(6)]
     board_sections_inverted: Annotated[list[bool], FixedLength(6)]
     structures: list[tuple[Hex, Structure]]
-    # clues_3_player: tuple[Clue, Clue, Clue]
-    # clues_4_player: tuple[Clue, Clue, Clue, Clue]
-    # clues_5_player: tuple[Clue, Clue, Clue, Clue, Clue]
+    clues_3_player: tuple[Clue, Clue, Clue]
+    clues_4_player: tuple[Clue, Clue, Clue, Clue]
+    clues_5_player: tuple[Clue, Clue, Clue, Clue, Clue]
     # hints_tuple: tuple[int, int, int]
 
-    # def __post_init__(self) -> None:
-    #     self.clues: dict[int, tuple[Clue, ...]] = {
-    #         3: self.clues_3_player,
-    #         4: self.clues_4_player,
-    #         5: self.clues_5_player,
-    #     }
-    #
+    def __post_init__(self) -> None:
+        self.clues: dict[int, tuple[Clue, ...]] = {
+            3: self.clues_3_player,
+            4: self.clues_4_player,
+            5: self.clues_5_player,
+        }
+
     #     # TODO: HINTS
     #     self.hints: dict[int, int] = {
     #         3: self.hints_tuple[0],
@@ -44,9 +45,9 @@ SETUP_CARDS: Final[Annotated[list[SetupCard], 54]] = [
             (DoubledHeightCoordinateHex(11, 1), Structure(Shape.STANDING_STONE, Color.GREEN)),
             (DoubledHeightCoordinateHex(9, 13), Structure(Shape.ABANDONED_SHACK, Color.GREEN)),
         ],
-        # clues_3_player=(ALPHA_CLUES[28], DELTA_CLUES[85], EPSILON_CLUES[8]),
-        # clues_4_player=(ALPHA_CLUES[2], BETA_CLUES[43], DELTA_CLUES[52], EPSILON_CLUES[42]),
-        # clues_5_player=(ALPHA_CLUES[17], BETA_CLUES[19], GAMMA_CLUES[73], DELTA_CLUES[50], EPSILON_CLUES[11]),
+        clues_3_player=(ALPHA_CLUES[28], DELTA_CLUES[85], EPSILON_CLUES[8]),
+        clues_4_player=(ALPHA_CLUES[2], BETA_CLUES[43], DELTA_CLUES[52], EPSILON_CLUES[42]),
+        clues_5_player=(ALPHA_CLUES[17], BETA_CLUES[19], GAMMA_CLUES[73], DELTA_CLUES[50], EPSILON_CLUES[11]),
         # hints_tuple=(25, 74, 15),
     ),
 ]

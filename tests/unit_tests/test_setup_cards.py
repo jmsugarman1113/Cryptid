@@ -57,5 +57,10 @@ class TestSetUpCards:
             terrain=Terrain.WATER,
         )
 
-    # TODO: test clues
-    # TODO: test clues
+    def test_clues(self):
+        for card in SETUP_CARDS:
+            assert len(card.clues) == 3
+            for key in [3, 4, 5]:
+                assert len(card.clues[key]) == key
+
+    # TODO: test hints
