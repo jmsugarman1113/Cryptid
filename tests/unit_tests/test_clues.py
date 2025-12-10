@@ -5,7 +5,7 @@ from cryptid.clue import (
     BETA_CLUES,
     GAMMA_CLUES,
     DELTA_CLUES,
-    # EPSILON_CLUES,
+    EPSILON_CLUES,
     OnOneOfTwoTerrainClue,
     WithinOneSpaceOfTerrainClue,
     WithinOneSpaceOfEitherAnimalTerritoryClue,
@@ -32,7 +32,7 @@ class TestClues:
             BETA_CLUES,
             GAMMA_CLUES,
             DELTA_CLUES,
-            # EPSILON_CLUES,
+            EPSILON_CLUES,
         ]:
             assert len(clue_book) == 97
             assert isinstance(clue_book[0], NullClue)
